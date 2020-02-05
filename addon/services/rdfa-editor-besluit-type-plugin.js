@@ -59,13 +59,9 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
    * @private
    */
   detectRelevantContext(context){
-    let isBesluit = false;
-    context.context.forEach((context) => {
-      if(context.object == 'http://data.vlaanderen.be/ns/besluit#Besluit') {
-        isBesluit = true;
-      }
-    })
-    return isBesluit
+    const contextElement = context.context.lastObject
+    console.log(contextElement)
+    return (contextElement.subject.includes('http://data.lblod.info/id/besluiten/') )
   },
 
 
