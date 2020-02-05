@@ -31,7 +31,6 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
    * @public
    */
   execute: task(function * (hrId, contexts, hintsRegistry, editor) {
-    console.log('Hello2')
     if (contexts.length === 0) return [];
     const hints = [];
     contexts.forEach((context) => {
@@ -60,7 +59,13 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
    * @private
    */
   detectRelevantContext(context){
-    return context.text.toLowerCase().indexOf('hello') >= 0;
+    let isBesluit = false;
+    context.context.forEach((context) => {
+      if(context.object == 'http://data.vlaanderen.be/ns/besluit#Besluit') {
+        isBesluit = true;
+      }
+    })
+    return isBesluit
   },
 
 
