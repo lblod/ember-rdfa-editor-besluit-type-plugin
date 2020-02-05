@@ -1,6 +1,6 @@
 import { getOwner } from '@ember/application';
 import Service from '@ember/service';
-import EmberObject, { computed } from '@ember/object';
+import EmberObject from '@ember/object';
 import { task } from 'ember-concurrency';
 
 /**
@@ -34,13 +34,27 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
     if (contexts.length === 0) return [];
     const hints = [];
     contexts.forEach((context) => {
-      let relevantContext = this.detectRelevantContext(context)
-      if (relevantContext) {
-        hintsRegistry.removeHintsInRegion(context.region, hrId, this.get('who'));
+      const isRelevantContext = this.detectRelevantContext(context);
+
+      if (isRelevantContext) {
+        let besluitNode = null;
+        let tmp = context.semanticNode;
+        while (!besluitNode) {
+          if (tmp.rdfaAttributes && tmp.rdfaAttributes.typeof && tmp.rdfaAttributes.typeof.includes('http://data.vlaanderen.be/ns/besluit#Besluit')) {
+            besluitNode = tmp;
+          } else {
+            tmp = tmp.parent;
+          }
+        }
+
+        // TODO: create a helper to get besluitNode and create proper hints
+        hintsRegistry.removeHintsInRegion([besluitNode.start, besluitNode.end], hrId, this.get('who'));
         hints.pushObjects(this.generateHintsForContext(context));
       }
     });
+
     const cards = hints.map( (hint) => this.generateCard(hrId, hintsRegistry, editor, hint));
+
     if(cards.length > 0){
       hintsRegistry.addHints(hrId, this.get('who'), cards);
     }
@@ -59,9 +73,8 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
    * @private
    */
   detectRelevantContext(context){
-    const contextElement = context.context.lastObject
-    console.log(contextElement)
-    return (contextElement.subject.includes('http://data.lblod.info/id/besluiten/') )
+    let decisions = context.context.filter( o => o.object == 'http://data.vlaanderen.be/ns/besluit#Besluit');
+    return decisions.length > 0;
   },
 
 
