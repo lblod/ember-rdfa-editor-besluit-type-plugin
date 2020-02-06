@@ -43,12 +43,25 @@ export default Component.extend({
    * @private
   */
   hintsRegistry: reads('info.hintsRegistry'),
+  besluitUri: reads('info.besluitUri'),
 
   actions: {
     insert(){
       this.get('hintsRegistry').removeHintsAtLocation(this.get('location'), this.get('hrId'), 'editor-plugins/besluit-type-card');
       const mappedLocation = this.get('hintsRegistry').updateLocationToCurrentIndex(this.get('hrId'), this.get('location'));
       this.get('editor').replaceTextWithHTML(...mappedLocation, this.get('info').htmlString);
+    },
+    changeDecisionType(e) {
+      console.log(e.target.value)
+      const result = this.editor.selectContext(this.location, {
+        resource: this.besluitUri
+      })
+      this.editor.update(result, {
+        set: {
+          resource: e.target.value
+        }
+      })
+      console.log(result)
     }
   }
 });

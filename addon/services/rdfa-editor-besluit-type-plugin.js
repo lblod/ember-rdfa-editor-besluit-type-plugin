@@ -33,11 +33,10 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
   execute: task(function * (hrId, contexts, hintsRegistry, editor) {
     if (contexts.length === 0) return [];
     const hints = [];
+    let besluitNode = null
     contexts.forEach((context) => {
       const isRelevantContext = this.detectRelevantContext(context);
-
       if (isRelevantContext) {
-        let besluitNode = null;
         let tmp = context.semanticNode;
         while (!besluitNode) {
           if (tmp.rdfaAttributes && tmp.rdfaAttributes.typeof && tmp.rdfaAttributes.typeof.includes('http://data.vlaanderen.be/ns/besluit#Besluit')) {
@@ -46,12 +45,13 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
             tmp = tmp.parent;
           }
         }
-
-        // TODO: create a helper to get besluitNode and create proper hints
-        hintsRegistry.removeHintsInRegion([besluitNode.start, besluitNode.end], hrId, this.get('who'));
-        hints.pushObjects(this.generateHintsForContext(context));
       }
     });
+    if(besluitNode) {
+      console.log(besluitNode)
+      hintsRegistry.removeHintsInRegion([besluitNode.start, besluitNode.end], hrId, this.get('who'));
+      hints.pushObjects(this.generateHintsForContext(besluitNode));
+    }
 
     const cards = hints.map( (hint) => this.generateCard(hrId, hintsRegistry, editor, hint));
 
@@ -116,10 +116,12 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
         plainValue: hint.text,
         htmlString: '<b>hello world</b>',
         location: hint.location,
+        besluitUri: hint.uri,
         hrId, hintsRegistry, editor
       },
       location: hint.location,
-      card: this.get('who')
+      card: this.get('who'),
+      options: { noHighlight: true }
     });
   },
 
@@ -134,12 +136,10 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
    *
    * @private
    */
-  generateHintsForContext(context){
+  generateHintsForContext(besluit){
     const hints = [];
-    const index = context.text.toLowerCase().indexOf('hello');
-    const text = context.text.slice(index, index+5);
-    const location = this.normalizeLocation([index, index + 5], context.region);
-    hints.push({text, location});
+    const uri = besluit.rdfaAttributes._resource
+    hints.push({text: 'abc', location: besluit.region, uri});
     return hints;
   }
 });

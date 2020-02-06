@@ -1,5 +1,12 @@
 <p class="u-spacer--tiny">{{info.label}} <br>
-  <strong>{{info.plainValue}}</strong>
+  <span>{{besluitUri}}</span>
+  <span>Decision Type: </span>
+  <select name="select" class="select" id="select-demo" onchange={{action 'changeDecisionType'}} >
+    <option value="1">Besluit Type 1</option>
+    <option value="2">Besluit Type 2</option>
+    <option value="3">Besluit Type 3</option>
+    <option value="4">Besluit Type 4</option>
+  </select>
 </p>
 
 {{#wu-button-group}}
