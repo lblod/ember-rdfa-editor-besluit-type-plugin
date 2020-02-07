@@ -48,7 +48,6 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
       }
     });
     if(besluitNode) {
-      console.log(besluitNode)
       hintsRegistry.removeHintsInRegion([besluitNode.start, besluitNode.end], hrId, this.get('who'));
       hints.pushObjects(this.generateHintsForContext(besluitNode));
     }
@@ -139,7 +138,16 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
   generateHintsForContext(besluit){
     const hints = [];
     const uri = besluit.rdfaAttributes._resource
-    hints.push({text: 'abc', location: besluit.region, uri});
+    let besluitType
+    const typeOf = besluit.rdfaAttributes._typeof
+    for(let i = 0; i<typeOf.length; i++) {
+      const type = typeOf[i]
+      if(type.includes('besluittype:')) {
+        besluitType = type
+        break;
+      }
+    }
+    hints.push({text: 'abc', location: besluit.region, uri, besluitType});
     return hints;
   }
 });

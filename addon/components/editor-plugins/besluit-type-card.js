@@ -44,24 +44,41 @@ export default Component.extend({
   */
   hintsRegistry: reads('info.hintsRegistry'),
   besluitUri: reads('info.besluitUri'),
+  besluitType: reads('info.besluitType'),
 
   actions: {
     insert(){
-      this.get('hintsRegistry').removeHintsAtLocation(this.get('location'), this.get('hrId'), 'editor-plugins/besluit-type-card');
-      const mappedLocation = this.get('hintsRegistry').updateLocationToCurrentIndex(this.get('hrId'), this.get('location'));
-      this.get('editor').replaceTextWithHTML(...mappedLocation, this.get('info').htmlString);
+      // this.get('hintsRegistry').removeHintsAtLocation(this.get('location'), this.get('hrId'), 'editor-plugins/besluit-type-card');
+      // const mappedLocation = this.get('hintsRegistry').updateLocationToCurrentIndex(this.get('hrId'), this.get('location'));
+      // this.get('editor').replaceTextWithHTML(...mappedLocation, this.get('info').htmlString);
     },
     changeDecisionType(e) {
-      console.log(e.target.value)
+      console.log(this.besluitType)
+      const newBesluitType = e.target.value
       const result = this.editor.selectContext(this.location, {
         resource: this.besluitUri
       })
+      const typeOf = result.selections[0].richNode.rdfaAttributes._typeof
+      let indexTypeOfBesluit = -1;
+      for(let i = 0; i<typeOf.length; i++) {
+        const type = typeOf[i]
+        if(type.includes('besluittype:')) {
+          indexTypeOfBesluit = i
+          break;
+        }
+      }
+      if(indexTypeOfBesluit !== -1) {
+        typeOf[indexTypeOfBesluit] = newBesluitType
+      } else {
+        typeOf.push(newBesluitType)
+      }
+      this.besluitType = newBesluitType
+      const typeOfString = typeOf.join(' ')
       this.editor.update(result, {
         set: {
-          resource: e.target.value
+          typeof: typeOfString
         }
       })
-      console.log(result)
     }
   }
 });
