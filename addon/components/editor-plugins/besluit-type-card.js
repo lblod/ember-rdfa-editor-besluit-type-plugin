@@ -45,11 +45,13 @@ export default Component.extend({
   hintsRegistry: reads('info.hintsRegistry'),
   besluitUri: reads('info.besluitUri'),
   besluitType: reads('info.besluitType'),
+
   didRender() {
     const result = this.editor.selectContext(this.location, {
       resource: this.besluitUri
-    })
+    });
     const typeOf = result.selections[0].richNode.rdfaAttributes._typeof;
+
     let besluitType;
     for(let i = 0; i<typeOf.length; i++) {
       const type = typeOf[i];
@@ -58,14 +60,16 @@ export default Component.extend({
         break;
       }
     }
-    this.besluitType = besluitType
+    this.besluitType = besluitType;
   },
+
   actions: {
+
     changeDecisionType(e) {
       const newBesluitType = e.target.value;
       const result = this.editor.selectContext(this.location, {
         resource: this.besluitUri
-      })
+      });
       const typeOf = result.selections[0].richNode.rdfaAttributes._typeof;
       let indexTypeOfBesluit = -1;
       for(let i = 0; i<typeOf.length; i++) {
@@ -86,7 +90,8 @@ export default Component.extend({
         set: {
           typeof: typeOfString
         }
-      })
+      });
     }
+
   }
 });
