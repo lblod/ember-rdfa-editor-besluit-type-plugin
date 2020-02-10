@@ -45,15 +45,26 @@ export default Component.extend({
   hintsRegistry: reads('info.hintsRegistry'),
   besluitUri: reads('info.besluitUri'),
   besluitType: reads('info.besluitType'),
-
+  didRender() {
+    const result = this.editor.selectContext(this.location, {
+      resource: this.besluitUri
+    })
+    const typeOf = result.selections[0].richNode.rdfaAttributes._typeof
+    let besluitType
+    for(let i = 0; i<typeOf.length; i++) {
+      const type = typeOf[i]
+      if(type.includes('besluitType:')) {
+        besluitType = type
+        break;
+      }
+    }
+    this.besluitType = besluitType
+  },
   actions: {
     insert(){
-      // this.get('hintsRegistry').removeHintsAtLocation(this.get('location'), this.get('hrId'), 'editor-plugins/besluit-type-card');
-      // const mappedLocation = this.get('hintsRegistry').updateLocationToCurrentIndex(this.get('hrId'), this.get('location'));
-      // this.get('editor').replaceTextWithHTML(...mappedLocation, this.get('info').htmlString);
+      
     },
     changeDecisionType(e) {
-      console.log(this.besluitType)
       const newBesluitType = e.target.value
       const result = this.editor.selectContext(this.location, {
         resource: this.besluitUri
@@ -62,7 +73,7 @@ export default Component.extend({
       let indexTypeOfBesluit = -1;
       for(let i = 0; i<typeOf.length; i++) {
         const type = typeOf[i]
-        if(type.includes('besluittype:')) {
+        if(type.includes('besluitType:')) {
           indexTypeOfBesluit = i
           break;
         }

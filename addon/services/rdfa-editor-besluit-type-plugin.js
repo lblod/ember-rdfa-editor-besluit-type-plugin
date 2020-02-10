@@ -138,16 +138,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
   generateHintsForContext(besluit){
     const hints = [];
     const uri = besluit.rdfaAttributes._resource
-    let besluitType
-    const typeOf = besluit.rdfaAttributes._typeof
-    for(let i = 0; i<typeOf.length; i++) {
-      const type = typeOf[i]
-      if(type.includes('besluittype:')) {
-        besluitType = type
-        break;
-      }
-    }
-    hints.push({text: 'abc', location: besluit.region, uri, besluitType});
+    hints.push({text: 'abc', location: besluit.region, uri});
     return hints;
   }
 });
