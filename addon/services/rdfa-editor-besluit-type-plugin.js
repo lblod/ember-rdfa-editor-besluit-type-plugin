@@ -49,40 +49,6 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
   }),
 
   /**
-   * Given context object, tries to detect a context the plugin can work on
-   *
-   * @method detectRelevantContext
-   *
-   * @param {Object} context Text snippet at a specific location with an RDFa context
-   *
-   * @return {String} URI of context if found, else empty string.
-   *
-   * @private
-   */
-  detectRelevantContext(context){
-    let decisions = context.context.filter( o => o.object == 'http://data.vlaanderen.be/ns/besluit#Besluit');
-    return decisions.length > 0;
-  },
-
-
-
-  /**
-   * Maps location of substring back within reference location
-   *
-   * @method normalizeLocation
-   *
-   * @param {[int,int]} [start, end] Location withing string
-   * @param {[int,int]} [start, end] reference location
-   *
-   * @return {[int,int]} [start, end] absolute location
-   *
-   * @private
-   */
-  normalizeLocation(location, reference){
-    return [location[0] + reference[0], location[1] + reference[0]];
-  },
-
-  /**
    * Generates a card given a hint
    *
    * @method generateCard
