@@ -15,6 +15,7 @@ module.exports = {
     browser: true
   },
   rules: {
+    semi: 'always'
   },
   overrides: [
     // node files
@@ -44,7 +45,7 @@ module.exports = {
       },
       plugins: ['node'],
       rules: Object.assign({}, require('eslint-plugin-node').configs.recommended.rules, {
-        // add your custom rules and overrides for node files here
+        
       })
     }
   ]

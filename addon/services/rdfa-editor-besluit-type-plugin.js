@@ -33,7 +33,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
   execute: task(function * (hrId, contexts, hintsRegistry, editor) {
     if (contexts.length === 0) return [];
     const hints = [];
-    let besluitNode = null
+    let besluitNode = null;
     contexts.forEach((context) => {
       const isRelevantContext = this.detectRelevantContext(context);
       if (isRelevantContext) {
@@ -57,7 +57,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
     if(cards.length > 0){
       hintsRegistry.addHints(hrId, this.get('who'), cards);
     }
-    yield 1
+    yield 1;
   }),
 
   /**
@@ -137,7 +137,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
    */
   generateHintsForContext(besluit){
     const hints = [];
-    const uri = besluit.rdfaAttributes._resource
+    const uri = besluit.rdfaAttributes._resource;
     hints.push({text: 'abc', location: besluit.region, uri});
     return hints;
   }

@@ -49,12 +49,12 @@ export default Component.extend({
     const result = this.editor.selectContext(this.location, {
       resource: this.besluitUri
     })
-    const typeOf = result.selections[0].richNode.rdfaAttributes._typeof
-    let besluitType
+    const typeOf = result.selections[0].richNode.rdfaAttributes._typeof;
+    let besluitType;
     for(let i = 0; i<typeOf.length; i++) {
-      const type = typeOf[i]
+      const type = typeOf[i];
       if(type.includes('besluittype:')) {
-        besluitType = type
+        besluitType = type;
         break;
       }
     }
@@ -62,26 +62,26 @@ export default Component.extend({
   },
   actions: {
     changeDecisionType(e) {
-      const newBesluitType = e.target.value
+      const newBesluitType = e.target.value;
       const result = this.editor.selectContext(this.location, {
         resource: this.besluitUri
       })
-      const typeOf = result.selections[0].richNode.rdfaAttributes._typeof
+      const typeOf = result.selections[0].richNode.rdfaAttributes._typeof;
       let indexTypeOfBesluit = -1;
       for(let i = 0; i<typeOf.length; i++) {
-        const type = typeOf[i]
+        const type = typeOf[i];
         if(type.includes('besluittype:')) {
-          indexTypeOfBesluit = i
+          indexTypeOfBesluit = i;
           break;
         }
       }
       if(indexTypeOfBesluit !== -1) {
-        typeOf[indexTypeOfBesluit] = newBesluitType
+        typeOf[indexTypeOfBesluit] = newBesluitType;
       } else {
-        typeOf.push(newBesluitType)
+        typeOf.push(newBesluitType);
       }
-      this.besluitType = newBesluitType
-      const typeOfString = typeOf.join(' ')
+      this.besluitType = newBesluitType;
+      const typeOfString = typeOf.join(' ');
       this.editor.update(result, {
         set: {
           typeof: typeOfString
