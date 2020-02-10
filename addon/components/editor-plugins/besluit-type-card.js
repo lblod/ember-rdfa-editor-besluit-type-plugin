@@ -46,27 +46,32 @@ export default Component.extend({
   besluitUri: reads('info.besluitUri'),
   besluitType: reads('info.besluitType'),
 
-  didRender() {
-    const result = this.editor.selectContext(this.location, {
-      resource: this.besluitUri
-    });
-    const typeOf = result.selections[0].richNode.rdfaAttributes._typeof;
+  // Comment : Why we needed didRender() ?
 
-    let besluitType;
-    for(let i = 0; i<typeOf.length; i++) {
-      const type = typeOf[i];
-      if(type.includes('besluittype:')) {
-        besluitType = type;
-        break;
-      }
-    }
-    this.besluitType = besluitType;
-  },
+  // didRender() {
+  //   const result = this.editor.selectContext(this.location, {
+  //     resource: this.besluitUri
+  //   });
+  //   const typeOf = result.selections[0].richNode.rdfaAttributes._typeof;
+  //
+  //   let besluitType;
+  //   for(let i = 0; i<typeOf.length; i++) {
+  //     const type = typeOf[i];
+  //     if(type.includes('besluittype:')) {
+  //       besluitType = type;
+  //       break;
+  //     }
+  //   }
+  //   this.besluitType = besluitType;
+  // },
 
   actions: {
+    updateBesluitType(besluitType) {
+      this.set('besluitType', besluitType);
+    },
 
-    changeDecisionType(e) {
-      const newBesluitType = e.target.value;
+    insert() {
+      const newBesluitType = this.besluitTyp;
       const result = this.editor.selectContext(this.location, {
         resource: this.besluitUri
       });
@@ -92,6 +97,5 @@ export default Component.extend({
         }
       });
     }
-
   }
 });
