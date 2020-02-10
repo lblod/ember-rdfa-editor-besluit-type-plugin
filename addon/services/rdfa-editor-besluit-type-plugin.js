@@ -30,34 +30,22 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
    *
    * @public
    */
-  execute: task(function * (hrId, contexts, hintsRegistry, editor) {
-    if (contexts.length === 0) return [];
-    const hints = [];
-    let besluitNode = null;
-    contexts.forEach((context) => {
-      const isRelevantContext = this.detectRelevantContext(context);
-      if (isRelevantContext) {
-        let tmp = context.semanticNode;
-        while (!besluitNode) {
-          if (tmp.rdfaAttributes && tmp.rdfaAttributes.typeof && tmp.rdfaAttributes.typeof.includes('http://data.vlaanderen.be/ns/besluit#Besluit')) {
-            besluitNode = tmp;
-          } else {
-            tmp = tmp.parent;
-          }
-        }
-      }
+   execute: task(function * (hrId, rdfaBlocks, hintsRegistry, editor) {
+    if (rdfaBlocks.length === 0) return [];
+    let hints = [];
+
+    const uniqueRichNodes = editor.findUniqueRichNodes(rdfaBlocks, { typeof: 'http://data.vlaanderen.be/ns/besluit#Besluit' });
+
+    uniqueRichNodes.forEach((richNode) => {
+      hintsRegistry.removeHintsInRegion([richNode.start, richNode.end], hrId, this.get('who'));
+      hints.pushObjects(this.generateHintsForContext(richNode));
     });
-    if(besluitNode) {
-      hintsRegistry.removeHintsInRegion([besluitNode.start, besluitNode.end], hrId, this.get('who'));
-      hints.pushObjects(this.generateHintsForContext(besluitNode));
-    }
 
     const cards = hints.map( (hint) => this.generateCard(hrId, hintsRegistry, editor, hint));
 
     if(cards.length > 0){
       hintsRegistry.addHints(hrId, this.get('who'), cards);
     }
-    yield 1;
   }),
 
   /**
