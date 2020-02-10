@@ -53,7 +53,7 @@ export default Component.extend({
     let besluitType
     for(let i = 0; i<typeOf.length; i++) {
       const type = typeOf[i]
-      if(type.includes('besluitType:')) {
+      if(type.includes('besluittype:')) {
         besluitType = type
         break;
       }
@@ -61,9 +61,6 @@ export default Component.extend({
     this.besluitType = besluitType
   },
   actions: {
-    insert(){
-      
-    },
     changeDecisionType(e) {
       const newBesluitType = e.target.value
       const result = this.editor.selectContext(this.location, {
@@ -73,7 +70,7 @@ export default Component.extend({
       let indexTypeOfBesluit = -1;
       for(let i = 0; i<typeOf.length; i++) {
         const type = typeOf[i]
-        if(type.includes('besluitType:')) {
+        if(type.includes('besluittype:')) {
           indexTypeOfBesluit = i
           break;
         }
