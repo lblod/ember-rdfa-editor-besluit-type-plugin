@@ -1,7 +1,7 @@
 ember-rdfa-editor-besluit-type-plugin
 ==============================================================================
 
-[Short description of the addon.]
+RDFa editor plugin to change the type of a besluit
 
 
 Compatibility
@@ -19,11 +19,13 @@ Installation
 ember install ember-rdfa-editor-besluit-type-plugin
 ```
 
+## Configuration
+### Dispatcher configuration
+The plugin will automatically be added in the `default` and `all` editor profiles in `app/config/editor-profiles.js`. Add the plugin name `rdfa-editor-besluit-type` to other editor profiles if you want to enable the plugin in these profiles, too.
 
-Usage
-------------------------------------------------------------------------------
+Once the plugin is configured in the appropriate editor profiles in `app/config/editor-profiles.js` it will be automatically be picked up by the rdfa-editor.
 
-[Longer description of how to use the addon in apps.]
+
 
 
 Contributing
