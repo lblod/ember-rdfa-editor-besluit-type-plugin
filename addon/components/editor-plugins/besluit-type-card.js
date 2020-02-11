@@ -64,7 +64,7 @@ export default Component.extend({
           } else {
             return type;
           }
-        })
+        });
       } else {
         newTypeOfs = this.info.besluitTypeOfs;
         newTypeOfs.push(this.besluitType);
@@ -81,11 +81,22 @@ export default Component.extend({
       });
 
       // Trick: add invisible text to trigger the execute service again // WIP on the editor
-      this.editor.update(selection, {
-        prepend: {
-          innerHTML: `<span class="u-hidden">${new Date()}</span>`
-        }
-      });
+      if (oldBesluitType) { // We already have a hidden span in the document, we only need to change its content
+        const hiddenSelection = this.editor.selectContext(this.location, {
+          typeof: "http://mu.semte.ch/vocabularies/ext/hiddenBesluitType"
+        });
+        this.editor.update(hiddenSelection, {
+          set: {
+            innerHTML: this.besluitType
+          }
+        });
+      } else { // We add the span into the decision
+        this.editor.update(selection, {
+          prepend: {
+            innerHTML: `<span class="u-hidden" typeof="ext:hiddenBesluitType">${this.besluitType}</span>`
+          }
+        });
+      }
     }
   }
 });
