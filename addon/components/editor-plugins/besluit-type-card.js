@@ -46,54 +46,44 @@ export default Component.extend({
   besluitUri: reads('info.besluitUri'),
   besluitType: reads('info.besluitType'),
 
-  // Comment : Why we needed didRender() ?
-
-  // didRender() {
-  //   const result = this.editor.selectContext(this.location, {
-  //     resource: this.besluitUri
-  //   });
-  //   const typeOf = result.selections[0].richNode.rdfaAttributes._typeof;
-  //
-  //   let besluitType;
-  //   for(let i = 0; i<typeOf.length; i++) {
-  //     const type = typeOf[i];
-  //     if(type.includes('besluittype:')) {
-  //       besluitType = type;
-  //       break;
-  //     }
-  //   }
-  //   this.besluitType = besluitType;
-  // },
-
   actions: {
     updateBesluitType(besluitType) {
       this.set('besluitType', besluitType);
     },
 
     insert() {
-      const newBesluitType = this.besluitTyp;
-      const result = this.editor.selectContext(this.location, {
+      this.hintsRegistry.removeHintsAtLocation(this.location, this.hrId, this.who);
+
+      let newTypeOfs = null;
+      const oldBesluitType = this.info.besluitTypeOfs.filter(type => type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')).firstObject;
+
+      if (oldBesluitType) {
+        newTypeOfs = this.info.besluitTypeOfs.map(type => {
+          if (type == oldBesluitType) {
+            return this.besluitType;
+          } else {
+            return type;
+          }
+        })
+      } else {
+        newTypeOfs = this.info.besluitTypeOfs;
+        newTypeOfs.push(this.besluitType);
+      }
+
+      const selection = this.editor.selectContext(this.location, {
         resource: this.besluitUri
       });
-      const typeOf = result.selections[0].richNode.rdfaAttributes._typeof;
-      let indexTypeOfBesluit = -1;
-      for(let i = 0; i<typeOf.length; i++) {
-        const type = typeOf[i];
-        if(type.includes('besluittype:')) {
-          indexTypeOfBesluit = i;
-          break;
-        }
-      }
-      if(indexTypeOfBesluit !== -1) {
-        typeOf[indexTypeOfBesluit] = newBesluitType;
-      } else {
-        typeOf.push(newBesluitType);
-      }
-      this.besluitType = newBesluitType;
-      const typeOfString = typeOf.join(' ');
-      this.editor.update(result, {
+
+      this.editor.update(selection, {
         set: {
-          typeof: typeOfString
+          typeof: newTypeOfs
+        }
+      });
+
+      // Trick: add invisible text to trigger the execute service again // WIP on the editor
+      this.editor.update(selection, {
+        prepend: {
+          innerHTML: `<span class="u-hidden">${new Date()}</span>`
         }
       });
     }
