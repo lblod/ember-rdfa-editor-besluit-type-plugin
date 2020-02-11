@@ -70,6 +70,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
         htmlString: '<b>hello world</b>',
         location: hint.location,
         besluitUri: hint.uri,
+        besluitTypeOfs: hint.typeof,
         hrId, hintsRegistry, editor
       },
       location: hint.location,
@@ -89,10 +90,14 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
    *
    * @private
    */
-  generateHintsForContext(besluit){
+  generateHintsForContext(besluit) {
     const hints = [];
-    const uri = besluit.rdfaAttributes._resource;
-    hints.push({text: 'abc', location: besluit.region, uri});
+    const uri = besluit.rdfaAttributes.resource;
+    hints.push({
+      typeof: besluit.rdfaAttributes.typeof,
+      location: besluit.region,
+      uri
+    });
     return hints;
   }
 });

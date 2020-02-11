@@ -46,52 +46,57 @@ export default Component.extend({
   besluitUri: reads('info.besluitUri'),
   besluitType: reads('info.besluitType'),
 
-  didRender() {
-    const result = this.editor.selectContext(this.location, {
-      resource: this.besluitUri
-    });
-    const typeOf = result.selections[0].richNode.rdfaAttributes._typeof;
-
-    let besluitType;
-    for(let i = 0; i<typeOf.length; i++) {
-      const type = typeOf[i];
-      if(type.includes('besluittype:')) {
-        besluitType = type;
-        break;
-      }
-    }
-    this.besluitType = besluitType;
-  },
-
   actions: {
+    updateBesluitType(besluitType) {
+      this.set('besluitType', besluitType);
+    },
 
-    changeDecisionType(e) {
-      const newBesluitType = e.target.value;
-      const result = this.editor.selectContext(this.location, {
+    insert() {
+      this.hintsRegistry.removeHintsAtLocation(this.location, this.hrId, this.who);
+
+      let newTypeOfs = null;
+      const oldBesluitType = this.info.besluitTypeOfs.filter(type => type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')).firstObject;
+
+      if (oldBesluitType) {
+        newTypeOfs = this.info.besluitTypeOfs.map(type => {
+          if (type == oldBesluitType) {
+            return this.besluitType;
+          } else {
+            return type;
+          }
+        });
+      } else {
+        newTypeOfs = this.info.besluitTypeOfs;
+        newTypeOfs.push(this.besluitType);
+      }
+
+      const selection = this.editor.selectContext(this.location, {
         resource: this.besluitUri
       });
-      const typeOf = result.selections[0].richNode.rdfaAttributes._typeof;
-      let indexTypeOfBesluit = -1;
-      for(let i = 0; i<typeOf.length; i++) {
-        const type = typeOf[i];
-        if(type.includes('besluittype:')) {
-          indexTypeOfBesluit = i;
-          break;
-        }
-      }
-      if(indexTypeOfBesluit !== -1) {
-        typeOf[indexTypeOfBesluit] = newBesluitType;
-      } else {
-        typeOf.push(newBesluitType);
-      }
-      this.besluitType = newBesluitType;
-      const typeOfString = typeOf.join(' ');
-      this.editor.update(result, {
+
+      this.editor.update(selection, {
         set: {
-          typeof: typeOfString
+          typeof: newTypeOfs
         }
       });
-    }
 
+      // Trick: add invisible text to trigger the execute service again // WIP on the editor
+      if (oldBesluitType) { // We already have a hidden span in the document, we only need to change its content
+        const hiddenSelection = this.editor.selectContext(this.location, {
+          typeof: "http://mu.semte.ch/vocabularies/ext/hiddenBesluitType"
+        });
+        this.editor.update(hiddenSelection, {
+          set: {
+            innerHTML: this.besluitType
+          }
+        });
+      } else { // We add the span into the decision
+        this.editor.update(selection, {
+          prepend: {
+            innerHTML: `<span class="u-hidden" typeof="ext:hiddenBesluitType">${this.besluitType}</span>`
+          }
+        });
+      }
+    }
   }
 });
