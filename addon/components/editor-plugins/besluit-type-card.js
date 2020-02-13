@@ -1,5 +1,5 @@
 import { reads } from '@ember/object/computed';
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import layout from '../../templates/components/editor-plugins/besluit-type-card';
 import { action } from '@ember/object';
 

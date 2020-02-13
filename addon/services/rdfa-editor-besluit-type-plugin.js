@@ -1,4 +1,3 @@
-import { getOwner } from '@ember/application';
 import Service from '@ember/service';
 import EmberObject from '@ember/object';
 import { task } from 'ember-concurrency';
@@ -16,7 +15,6 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
 
   init(){
     this._super(...arguments);
-    const config = getOwner(this).resolveRegistration('config:environment');
     fetchBesluitTypes().then((types) => {
       this.types = types;
     });
