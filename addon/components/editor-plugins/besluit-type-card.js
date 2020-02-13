@@ -1,6 +1,7 @@
 import { reads } from '@ember/object/computed';
 import Component from '@ember/component';
 import layout from '../../templates/components/editor-plugins/besluit-type-card';
+import { action } from '@ember/object';
 
 
 /**
@@ -10,16 +11,17 @@ import layout from '../../templates/components/editor-plugins/besluit-type-card'
 * @class BesluitTypeCard
 * @extends Ember.Component
 */
-export default Component.extend({
-  layout,
 
+export default class BesluitTypeCard extends Component {
+  
   /**
    * Region on which the card applies
    * @property location
    * @type [number,number]
    * @private
   */
-  location: reads('info.location'),
+  @reads('info.location')
+  location;
 
   /**
    * Unique identifier of the event in the hints registry
@@ -27,7 +29,8 @@ export default Component.extend({
    * @type Object
    * @private
   */
-  hrId: reads('info.hrId'),
+  @reads('info.hrId')
+  hrId;
 
   /**
    * The RDFa editor instance
@@ -35,7 +38,8 @@ export default Component.extend({
    * @type RdfaEditor
    * @private
   */
-  editor: reads('info.editor'),
+  @reads('info.editor')
+  editor;
 
   /**
    * Hints registry storing the cards
@@ -43,7 +47,8 @@ export default Component.extend({
    * @type HintsRegistry
    * @private
   */
-  hintsRegistry: reads('info.hintsRegistry'),
+  @reads('info.hintsRegistry')
+  hintsRegistry;
 
   /**
    * URI of the besluit we are interacting with
@@ -51,7 +56,8 @@ export default Component.extend({
    * @type String
    * @private
   */
-  besluitUri: reads('info.besluitUri'),
+  @reads('info.besluitUri')
+  besluitUri;
 
   /**
    * Actual besluit type selected
@@ -59,7 +65,8 @@ export default Component.extend({
    * @type BesluitType
    * @private
   */
-  besluitType: reads('info.besluitType'),
+  @reads('info.besluitType')
+  besluitType;
 
   /**
    * Array of Besluit types fetched from the ttl
@@ -67,60 +74,66 @@ export default Component.extend({
    * @type BesluitType Array
    * @private
   */
-  besluitTypes: reads('info.besluitTypes'),
+  @reads('info.besluitTypes')
+  besluitTypes;
 
-  actions: {
-    updateBesluitType(selected) {
-      const besluitType = selected;
-      this.set('besluitType', besluitType);
-    },
+  constructor() {
+    super(...arguments);
+    this.layout = layout;
+  }
 
-    insert() {
-      this.hintsRegistry.removeHintsAtLocation(this.location, this.hrId, this.who);
+  @action
+  updateBesluitType(selected) {
+    const besluitType = selected;
+    this.set('besluitType', besluitType);
+  }
 
-      let newTypeOfs = null;
-      const oldBesluitType = this.info.besluitTypeOfs.filter(type => type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')).firstObject;
+  @action
+  insert() {
+    this.hintsRegistry.removeHintsAtLocation(this.location, this.hrId, this.who);
 
-      if (oldBesluitType) {
-        newTypeOfs = this.info.besluitTypeOfs.map(type => {
-          if (type == oldBesluitType) {
-            return this.besluitType.typeAttribute;
-          } else {
-            return type;
-          }
-        });
-      } else {
-        newTypeOfs = this.info.besluitTypeOfs;
-        newTypeOfs.push(this.besluitType.typeAttribute);
-      }
+    let newTypeOfs = null;
+    const oldBesluitType = this.info.besluitTypeOfs.filter(type => type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')).firstObject;
 
-      const selection = this.editor.selectContext(this.location, {
-        resource: this.besluitUri
-      });
-
-      this.editor.update(selection, {
-        set: {
-          typeof: newTypeOfs
+    if (oldBesluitType) {
+      newTypeOfs = this.info.besluitTypeOfs.map(type => {
+        if (type == oldBesluitType) {
+          return this.besluitType.typeAttribute;
+        } else {
+          return type;
         }
       });
+    } else {
+      newTypeOfs = this.info.besluitTypeOfs;
+      newTypeOfs.push(this.besluitType.typeAttribute);
+    }
 
-      // Trick: add invisible text to trigger the execute service again // WIP on the editor
-      if (oldBesluitType) { // We already have a hidden span in the document, we only need to change its content
-        const hiddenSelection = this.editor.selectContext(this.location, {
-          typeof: "http://mu.semte.ch/vocabularies/ext/hiddenBesluitType"
-        });
-        this.editor.update(hiddenSelection, {
-          set: {
-            innerHTML: this.besluitType
-          }
-        });
-      } else { // We add the span into the decision
-        this.editor.update(selection, {
-          prepend: {
-            innerHTML: `<span class="u-hidden" typeof="ext:hiddenBesluitType">${this.besluitType}</span>`
-          }
-        });
+    const selection = this.editor.selectContext(this.location, {
+      resource: this.besluitUri
+    });
+
+    this.editor.update(selection, {
+      set: {
+        typeof: newTypeOfs
       }
+    });
+
+    // Trick: add invisible text to trigger the execute service again // WIP on the editor
+    if (oldBesluitType) { // We already have a hidden span in the document, we only need to change its content
+      const hiddenSelection = this.editor.selectContext(this.location, {
+        typeof: "http://mu.semte.ch/vocabularies/ext/hiddenBesluitType"
+      });
+      this.editor.update(hiddenSelection, {
+        set: {
+          innerHTML: this.besluitType
+        }
+      });
+    } else { // We add the span into the decision
+      this.editor.update(selection, {
+        prepend: {
+          innerHTML: `<span class="u-hidden" typeof="ext:hiddenBesluitType">${this.besluitType}</span>`
+        }
+      });
     }
   }
-});
+}

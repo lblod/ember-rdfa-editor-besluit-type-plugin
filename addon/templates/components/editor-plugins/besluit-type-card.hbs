@@ -1,11 +1,10 @@
 <p class="u-spacer--tiny">{{info.label}} <br>
   <span>Decision Type: </span>
-  {{this.besluitType}}
   <BesluitTypeSelect @besluitTypes={{besluitTypes}} @onchange={{action "updateBesluitType"}} @selected={{this.besluitType}} />
 </p>
 
-{{#wu-button-group}}
+<WuButtonGroup>
   {{wu-button label="Voeg in" class="button button--narrow" onClick=(action 'insert')}}
-{{/wu-button-group}}
+</WuButtonGroup>
 
 {{yield}}
