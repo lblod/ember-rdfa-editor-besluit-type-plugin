@@ -2,7 +2,7 @@ import rdflib from 'ember-rdflib';
 
 export default async function fetchBesluitTypes() {
   const besluitTypesGraph = new rdflib.NamedNode("http://data.lblod.info/besluitTypes");
-  const response = await fetch('https://raw.githubusercontent.com/Informatievlaanderen/OSLOthema-lokaleBesluiten/master/codelijsten/besluit-type.ttl')
+  const response = await fetch('/assets/ttl/20200120153300-insert-besluit-types.ttl')
   const text = await response.text()
   const graph = rdflib.graph()
   await rdflib.parse(text, graph, besluitTypesGraph.value, "text/turtle");
