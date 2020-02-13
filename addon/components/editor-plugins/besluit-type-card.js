@@ -44,8 +44,29 @@ export default Component.extend({
    * @private
   */
   hintsRegistry: reads('info.hintsRegistry'),
+
+  /**
+   * URI of the besluit we are interacting with
+   * @property besluitUri
+   * @type String
+   * @private
+  */
   besluitUri: reads('info.besluitUri'),
+
+  /**
+   * Actual besluit type selected
+   * @property besluitType
+   * @type BesluitType
+   * @private
+  */
   besluitType: reads('info.besluitType'),
+
+  /**
+   * Array of Besluit types fetched from the ttl
+   * @property besluitType
+   * @type BesluitType Array
+   * @private
+  */
   besluitTypes: reads('info.besluitTypes'),
 
   actions: {
