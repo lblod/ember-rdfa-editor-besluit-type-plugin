@@ -1,11 +1,7 @@
 <p class="u-spacer--tiny">{{info.label}} <br>
   <span>Decision Type: </span>
-  <select name="select" onchange={{action "updateBesluitType" value="target.value"}}>
-    <option value="besluittype:1">Besluit Type 1</option>
-    <option value="besluittype:2">Besluit Type 2</option>
-    <option value="besluittype:3">Besluit Type 3</option>
-    <option value="besluittype:4">Besluit Type 4</option>
-  </select>
+  {{this.besluitType}}
+  <BesluitTypeSelect @besluitTypes={{besluitTypes}} @onchange={{action "updateBesluitType"}} @selected={{this.besluitType}} />
 </p>
 
 {{#wu-button-group}}

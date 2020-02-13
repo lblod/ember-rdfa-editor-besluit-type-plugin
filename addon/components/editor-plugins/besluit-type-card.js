@@ -2,6 +2,7 @@ import { reads } from '@ember/object/computed';
 import Component from '@ember/component';
 import layout from '../../templates/components/editor-plugins/besluit-type-card';
 
+
 /**
 * Card displaying a hint of the Date plugin
 *
@@ -45,9 +46,11 @@ export default Component.extend({
   hintsRegistry: reads('info.hintsRegistry'),
   besluitUri: reads('info.besluitUri'),
   besluitType: reads('info.besluitType'),
+  besluitTypes: reads('info.besluitTypes'),
 
   actions: {
-    updateBesluitType(besluitType) {
+    updateBesluitType(selected) {
+      const besluitType = selected;
       this.set('besluitType', besluitType);
     },
 
@@ -60,14 +63,14 @@ export default Component.extend({
       if (oldBesluitType) {
         newTypeOfs = this.info.besluitTypeOfs.map(type => {
           if (type == oldBesluitType) {
-            return this.besluitType;
+            return this.besluitType.typeAttribute;
           } else {
             return type;
           }
         });
       } else {
         newTypeOfs = this.info.besluitTypeOfs;
-        newTypeOfs.push(this.besluitType);
+        newTypeOfs.push(this.besluitType.typeAttribute);
       }
 
       const selection = this.editor.selectContext(this.location, {
