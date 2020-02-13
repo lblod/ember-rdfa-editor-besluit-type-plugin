@@ -2,7 +2,7 @@ import { getOwner } from '@ember/application';
 import Service from '@ember/service';
 import EmberObject from '@ember/object';
 import { task } from 'ember-concurrency';
-import fetchBesluitTypes from '../util/fetchBesluitTypes';
+import fetchBesluitTypes from '../utils/fetchBesluitTypes';
 
 /**
  * Service responsible for correct annotation of dates
@@ -78,7 +78,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
         besluitTypeOfs: hint.besluitTypeOfs,
         besluitType: hint.besluitType,
         besluitTypes: this.types,
-        hrId, hintsRegistry, editor, 
+        hrId, hintsRegistry, editor,
       },
       location: hint.location,
       card: this.get('who'),
@@ -101,19 +101,14 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
     const hints = [];
     const uri = besluit.rdfaAttributes.resource;
     const typeofAttr = besluit.rdfaAttributes.typeof;
-    let besluitTypeString = null;
-    for(let i = 0; i< typeofAttr.length; i++) {
-      const type = typeofAttr[i];
-      if(type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')) {
-        besluitTypeString = type;
-        break;
-      }
-    }
+
+    const besluitTypeString = typeofAttr.find(type => type.includes('https://data.vlaanderen.be/id/concept/BesluitType/'));
+
     let besluitType = undefined;
-    if(besluitTypeString) {
+    if (besluitTypeString) {
       besluitType = this.types.filter((type) => type.typeAttribute.replace('besluittype:', 'https://data.vlaanderen.be/id/concept/BesluitType/') === besluitTypeString)[0];
     }
-  
+
     hints.push({
       besluitType: besluitType,
       location: besluit.region,

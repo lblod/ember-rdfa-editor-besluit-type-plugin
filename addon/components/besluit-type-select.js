@@ -5,7 +5,7 @@ export default Component.extend({
   layout,
   selected: null,
   actions: {
-    search(term){
+    search(term) {
       return this.besluitTypes.filter((besluitType) => besluitType.label.includes(term));
     },
   }
