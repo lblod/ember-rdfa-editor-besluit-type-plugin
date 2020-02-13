@@ -1,4 +1,4 @@
-import Component from '@glimmer/component';
+import Component from '@ember/component';
 import layout from '../templates/components/besluit-type-select';
 import { action } from '@ember/object';
 
