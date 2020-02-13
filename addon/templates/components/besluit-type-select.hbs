@@ -1,0 +1,3 @@
+<PowerSelect @placeholder="Besluitenlijst, jaarrekening, ..." @search={{action "search"}} @searchPlaceholder="Typ om te zoeken..." @searchEnabled={{true}} @options={{this.besluitTypes}} @selected={{this.selected}} @onchange={{@onchange}} as |besluitType|>
+  {{besluitType.label}}
+</PowerSelect>

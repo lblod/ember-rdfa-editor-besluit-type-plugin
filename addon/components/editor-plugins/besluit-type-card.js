@@ -2,6 +2,7 @@ import { reads } from '@ember/object/computed';
 import Component from '@ember/component';
 import layout from '../../templates/components/editor-plugins/besluit-type-card';
 
+
 /**
 * Card displaying a hint of the Date plugin
 *
@@ -43,11 +44,34 @@ export default Component.extend({
    * @private
   */
   hintsRegistry: reads('info.hintsRegistry'),
+
+  /**
+   * URI of the besluit we are interacting with
+   * @property besluitUri
+   * @type String
+   * @private
+  */
   besluitUri: reads('info.besluitUri'),
+
+  /**
+   * Actual besluit type selected
+   * @property besluitType
+   * @type BesluitType
+   * @private
+  */
   besluitType: reads('info.besluitType'),
 
+  /**
+   * Array of Besluit types fetched from the ttl
+   * @property besluitType
+   * @type BesluitType Array
+   * @private
+  */
+  besluitTypes: reads('info.besluitTypes'),
+
   actions: {
-    updateBesluitType(besluitType) {
+    updateBesluitType(selected) {
+      const besluitType = selected;
       this.set('besluitType', besluitType);
     },
 
@@ -60,14 +84,14 @@ export default Component.extend({
       if (oldBesluitType) {
         newTypeOfs = this.info.besluitTypeOfs.map(type => {
           if (type == oldBesluitType) {
-            return this.besluitType;
+            return this.besluitType.typeAttribute;
           } else {
             return type;
           }
         });
       } else {
         newTypeOfs = this.info.besluitTypeOfs;
-        newTypeOfs.push(this.besluitType);
+        newTypeOfs.push(this.besluitType.typeAttribute);
       }
 
       const selection = this.editor.selectContext(this.location, {
@@ -81,17 +105,20 @@ export default Component.extend({
       });
 
       // Trick: add invisible text to trigger the execute service again // WIP on the editor
-      if (oldBesluitType) { // We already have a hidden span in the document, we only need to change its content
-        const hiddenSelection = this.editor.selectContext(this.location, {
-          typeof: "http://mu.semte.ch/vocabularies/ext/hiddenBesluitType"
-        });
+      const hiddenSelection = this.editor.selectContext(this.location, {
+        typeof: "http://mu.semte.ch/vocabularies/ext/hiddenBesluitType"
+      });
+      if (!this.editor.isEmpty(hiddenSelection)) { // We already have a hidden span in the document, we only need to change its content
         this.editor.update(hiddenSelection, {
           set: {
             innerHTML: this.besluitType
           }
         });
       } else { // We add the span into the decision
-        this.editor.update(selection, {
+        const selectionForSpan = this.editor.selectContext(this.location, { // We need to reselect for the case where the previous selection has changed
+          resource: this.besluitUri
+        });
+        this.editor.update(selectionForSpan, {
           prepend: {
             innerHTML: `<span class="u-hidden" typeof="ext:hiddenBesluitType">${this.besluitType}</span>`
           }

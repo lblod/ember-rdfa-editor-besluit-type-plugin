@@ -2,6 +2,7 @@ import { getOwner } from '@ember/application';
 import Service from '@ember/service';
 import EmberObject from '@ember/object';
 import { task } from 'ember-concurrency';
+import fetchBesluitTypes from '../utils/fetchBesluitTypes';
 
 /**
  * Service responsible for correct annotation of dates
@@ -16,6 +17,9 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
   init(){
     this._super(...arguments);
     const config = getOwner(this).resolveRegistration('config:environment');
+    fetchBesluitTypes().then((types) => {
+      this.types = types;
+    });
   },
 
   /**
@@ -46,6 +50,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
     if(cards.length > 0){
       hintsRegistry.addHints(hrId, this.get('who'), cards);
     }
+    yield 0;
   }),
 
   /**
@@ -70,8 +75,10 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
         htmlString: '<b>hello world</b>',
         location: hint.location,
         besluitUri: hint.uri,
-        besluitTypeOfs: hint.typeof,
-        hrId, hintsRegistry, editor
+        besluitTypeOfs: hint.besluitTypeOfs,
+        besluitType: hint.besluitType,
+        besluitTypes: this.types,
+        hrId, hintsRegistry, editor,
       },
       location: hint.location,
       card: this.get('who'),
@@ -93,9 +100,19 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
   generateHintsForContext(besluit) {
     const hints = [];
     const uri = besluit.rdfaAttributes.resource;
+    const typeofAttr = besluit.rdfaAttributes.typeof;
+
+    const besluitTypeString = typeofAttr.find(type => type.includes('https://data.vlaanderen.be/id/concept/BesluitType/'));
+
+    let besluitType = undefined;
+    if (besluitTypeString) {
+      besluitType = this.types.filter((type) => type.typeAttribute.replace('besluittype:', 'https://data.vlaanderen.be/id/concept/BesluitType/') === besluitTypeString)[0];
+    }
+
     hints.push({
-      typeof: besluit.rdfaAttributes.typeof,
+      besluitType: besluitType,
       location: besluit.region,
+      besluitTypeOfs: besluit.rdfaAttributes.typeof,
       uri
     });
     return hints;
