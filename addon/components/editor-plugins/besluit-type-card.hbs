@@ -1,0 +1,10 @@
+<p class="u-spacer--tiny">
+  <span>Besluit type: </span>
+  <BesluitTypeSelect @besluitTypes={{this.besluitTypes}} @onchange={{this.updateBesluitType}} @selected={{this.besluitType}} />
+</p>
+
+<WuButtonGroup>
+  <WuButton @label="Voeg in" class="button button--narrow" @onClick={{this.insert}} />
+</WuButtonGroup>
+
+{{yield}}

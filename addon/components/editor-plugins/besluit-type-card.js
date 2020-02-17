@@ -1,6 +1,5 @@
 import { reads } from '@ember/object/computed';
-import Component from '@ember/component';
-import layout from '../../templates/components/editor-plugins/besluit-type-card';
+import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
 /**
@@ -19,7 +18,7 @@ export default class BesluitTypeCard extends Component {
    * @type [number,number]
    * @private
    */
-  @reads('info.location')
+  @reads('args.info.location')
   location;
 
   /**
@@ -28,7 +27,7 @@ export default class BesluitTypeCard extends Component {
    * @type Object
    * @private
    */
-  @reads('info.hrId')
+  @reads('args.info.hrId')
   hrId;
 
   /**
@@ -37,7 +36,7 @@ export default class BesluitTypeCard extends Component {
    * @type RdfaEditor
    * @private
    */
-  @reads('info.editor')
+  @reads('args.info.editor')
   editor;
 
   /**
@@ -46,7 +45,7 @@ export default class BesluitTypeCard extends Component {
    * @type HintsRegistry
    * @private
    */
-  @reads('info.hintsRegistry')
+  @reads('args.info.hintsRegistry')
   hintsRegistry;
 
   /**
@@ -55,7 +54,7 @@ export default class BesluitTypeCard extends Component {
    * @type String
    * @private
    */
-  @reads('info.besluitUri')
+  @reads('args.info.besluitUri')
   besluitUri;
 
   /**
@@ -64,7 +63,7 @@ export default class BesluitTypeCard extends Component {
    * @type BesluitType
    * @private
    */
-  @reads('info.besluitType')
+  @reads('args.info.besluitType')
   besluitType;
 
   /**
@@ -73,18 +72,13 @@ export default class BesluitTypeCard extends Component {
    * @type BesluitType Array
    * @private
    */
-  @reads('info.besluitTypes')
+  @reads('args.info.besluitTypes')
   besluitTypes;
-
-  constructor() {
-    super(...arguments);
-    this.layout = layout;
-  }
 
   @action
   updateBesluitType(selected) {
     const besluitType = selected;
-    this.set('besluitType', besluitType);
+    this.besluitType = besluitType;
   }
 
   @action
@@ -92,10 +86,10 @@ export default class BesluitTypeCard extends Component {
     this.hintsRegistry.removeHintsAtLocation(this.location, this.hrId, this.who);
 
     let newTypeOfs = null;
-    const oldBesluitType = this.info.besluitTypeOfs.filter(type => type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')).firstObject;
+    const oldBesluitType = this.args.info.besluitTypeOfs.filter(type => type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')).firstObject;
 
     if (oldBesluitType) {
-      newTypeOfs = this.info.besluitTypeOfs.map(type => {
+      newTypeOfs = this.args.info.besluitTypeOfs.map(type => {
         if (type == oldBesluitType) {
           return this.besluitType.typeAttribute;
         } else {
@@ -103,7 +97,7 @@ export default class BesluitTypeCard extends Component {
         }
       });
     } else {
-      newTypeOfs = this.info.besluitTypeOfs;
+      newTypeOfs = this.args.info.besluitTypeOfs;
       newTypeOfs.push(this.besluitType.typeAttribute);
     }
 

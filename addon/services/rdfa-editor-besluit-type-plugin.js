@@ -46,7 +46,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
 
     const cards = hints.map( (hint) => this.generateCard(hrId, hintsRegistry, editor, hint));
 
-    if(cards.length > 0){
+    if(cards.length > 0) {
       hintsRegistry.addHints(hrId, this.get('who'), cards);
     }
     yield 0;
@@ -66,7 +66,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
    *
    * @private
    */
-  generateCard(hrId, hintsRegistry, editor, hint){
+  generateCard(hrId, hintsRegistry, editor, hint) {
     return EmberObject.create({
       info: {
         label: this.get('who'),
