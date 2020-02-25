@@ -36,7 +36,9 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
     if (rdfaBlocks.length === 0) return [];
     let hints = [];
 
-    rdfaBlocks.forEach(block => hintsRegistry.removeHintsInRegion([block.start, block.end], hrId, this.get('who')));
+    const startRegion = rdfaBlocks[0].start;
+    const endRegion = rdfaBlocks[rdfaBlocks.length-1].end;
+    hintsRegistry.removeHintsInRegion([startRegion, endRegion], hrId, this.get('who'));
 
     const uniqueRichNodes = editor.findUniqueRichNodes(rdfaBlocks, { typeof: 'http://data.vlaanderen.be/ns/besluit#Besluit' });
 
