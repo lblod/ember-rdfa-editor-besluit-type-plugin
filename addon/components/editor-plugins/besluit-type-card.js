@@ -113,7 +113,7 @@ export default class BesluitTypeCard extends Component {
 
     // Trick: add invisible text to trigger the execute service again // WIP on the editor
     const hiddenSelection = this.editor.selectContext(this.location, {
-      typeof: "http://mu.semte.ch/vocabularies/ext/hiddenBesluitType"
+      property: "http://mu.semte.ch/vocabularies/ext/hiddenBesluitType"
     });
     if (!this.editor.isEmpty(hiddenSelection)) { // We already have a hidden span in the document, we only need to change its content
       this.editor.update(hiddenSelection, {
@@ -127,7 +127,7 @@ export default class BesluitTypeCard extends Component {
       });
       this.editor.update(selectionForSpan, {
         prepend: {
-          innerHTML: `<span class="u-hidden" typeof="ext:hiddenBesluitType">${this.besluitType.typeAttribute}</span>`
+          innerHTML: `<span class="u-hidden" property="ext:hiddenBesluitType">${this.besluitType.typeAttribute}</span>`
         }
       });
     }
