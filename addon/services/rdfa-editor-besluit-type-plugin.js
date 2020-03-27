@@ -36,13 +36,10 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
     if (rdfaBlocks.length === 0) return [];
     let hints = [];
 
-    const startRegion = rdfaBlocks[0].start;
-    const endRegion = rdfaBlocks[rdfaBlocks.length-1].end;
-    hintsRegistry.removeHintsInRegion([startRegion, endRegion], hrId, this.get('who'));
-
     const uniqueRichNodes = editor.findUniqueRichNodes(rdfaBlocks, { typeof: 'http://data.vlaanderen.be/ns/besluit#Besluit' });
 
     uniqueRichNodes.forEach((richNode) => {
+      hintsRegistry.removeHintsInRegion(richNode.region, hrId, this.get('who'));
       hints.pushObjects(this.generateHintsForContext(richNode));
     });
 
@@ -51,6 +48,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
     if(cards.length > 0) {
       hintsRegistry.addHints(hrId, this.get('who'), cards);
     }
+
     yield 0;
   }),
 
@@ -73,7 +71,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
       info: {
         label: this.get('who'),
         plainValue: hint.text,
-        htmlString: '<b>hello world</b>',
+        htmlString: '',
         location: hint.location,
         besluitUri: hint.uri,
         besluitTypeOfs: hint.besluitTypeOfs,
