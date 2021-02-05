@@ -2,6 +2,7 @@ import Service from '@ember/service';
 import EmberObject from '@ember/object';
 import { task } from 'ember-concurrency';
 import fetchBesluitTypes from '../utils/fetchBesluitTypes';
+import { inject as service } from '@ember/service';
 
 /**
  * Service responsible for correct annotation of dates
@@ -13,12 +14,19 @@ import fetchBesluitTypes from '../utils/fetchBesluitTypes';
  */
 const RdfaEditorBesluitTypePlugin = Service.extend({
 
+  currentSession: service(),
+
   init(){
     this._super(...arguments);
-    fetchBesluitTypes().then((types) => {
-      this.types = types;
-    });
+    this.loadData.perform()
   },
+
+  loadData: task(function*() {
+    let bestuurseenheid = yield this.currentSession.get('group')
+    const classificatie = yield bestuurseenheid.get('classificatie');
+    const types = yield fetchBesluitTypes(classificatie.uri)
+    this.types = types
+  }),
 
   /**
    * task to handle the incoming events from the editor dispatcher
@@ -37,6 +45,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
     let hints = [];
 
     const uniqueRichNodes = editor.findUniqueRichNodes(rdfaBlocks, { typeof: 'http://data.vlaanderen.be/ns/besluit#Besluit' });
+
 
     uniqueRichNodes.forEach((richNode) => {
       hintsRegistry.removeHintsInRegion(richNode.region, hrId, this.get('who'));
