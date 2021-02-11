@@ -1,8 +1,8 @@
 import rdflib from 'ember-rdflib';
 
-export default async function fetchBesluitTypes() {
+export default async function fetchBesluitTypes(classificatieUri) {
   const besluitTypesGraph = new rdflib.NamedNode("http://data.lblod.info/besluitTypes");
-  const response = await fetch('/assets/ttl/20200120153300-insert-besluit-types.ttl');
+  const response = await fetch('/assets/ttl/20210205102900-new-besluit-types.ttl');
   const text = await response.text();
   const graph = rdflib.graph();
   await rdflib.parse(text, graph, besluitTypesGraph.value, "text/turtle");
@@ -13,6 +13,17 @@ export default async function fetchBesluitTypes() {
     const uri = typeNode.subject.value;
     const uuid = uri.split('/').pop();
     const uriNode = new rdflib.NamedNode(uri);
+
+    const decidableByNode = new rdflib.NamedNode('http://lblod.data.gift/vocabularies/besluit/decidableBy');
+    const decidableByMatch = graph.match(uriNode, decidableByNode);
+    let valid = false;
+    for(const match of decidableByMatch) {
+      if(match.object.value === classificatieUri) {
+        valid = true;
+      }
+    }
+    if(!valid) return;
+
     const prefLabelNode = new rdflib.NamedNode('http://www.w3.org/2004/02/skos/core#prefLabel');
     const prefLabelMatch = graph.match(uriNode, prefLabelNode);
     return {
@@ -20,5 +31,5 @@ export default async function fetchBesluitTypes() {
       label: prefLabelMatch[0].object.value
     };
   });
-  return besluitTypes;
+  return besluitTypes.filter(type => type);
 }
