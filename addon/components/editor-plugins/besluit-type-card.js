@@ -1,3 +1,4 @@
+import { tracked } from '@glimmer/tracking';
 import { reads } from '@ember/object/computed';
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
@@ -75,6 +76,13 @@ export default class BesluitTypeCard extends Component {
   @reads('args.info.besluitTypes')
   besluitTypes;
 
+  @tracked
+  hasSelected;
+
+  constructor(...args) {
+    super(...args);
+    this.hasSelected = !!this.args.info.besluitType;
+  }
   @action
   updateBesluitType(selected) {
     const besluitType = selected;
@@ -85,6 +93,7 @@ export default class BesluitTypeCard extends Component {
   insert() {
     this.hintsRegistry.removeHintsAtLocation(this.location, this.hrId, this.who);
 
+    this.hasSelected = true;
     let newTypeOfs = null;
     const oldBesluitType = this.args.info.besluitTypeOfs.filter(type => type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')).firstObject;
 
