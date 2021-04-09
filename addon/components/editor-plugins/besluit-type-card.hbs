@@ -11,18 +11,24 @@
     </div>
   </div>
   <div class="modal-dialog__content">
-    <BesluitTypeSelect @besluitTypes={{this.besluitTypes}} @onchange={{this.updateBesluitType}} @selected={{this.besluitType}} />
+    {{#if this.hasSelected}}
+      <BesluitTypeSelect @disabled={{true}} @besluitTypes={{this.besluitTypes}} @onchange={{this.updateBesluitType}} @selected={{this.besluit}} />
+    {{else}}
+      <BesluitTypeSelect @besluitTypes={{this.besluitTypes}} @onchange={{this.updateBesluitType}} @selected={{this.besluit}} />
+    {{/if}}
   </div>
-  {{#if this.besluitType.subTypes.length}}
-    <div class="modal-dialog__content">
-      <BesluitTypeSelect @besluitTypes={{this.besluitType.subTypes}} @onchange={{this.updateBesluitSubType}} @selected={{this.besluitSubType}} />
-    </div>
-  {{/if}}
-  {{#if this.besluitSubType.subTypes.length}}
-    <div class="modal-dialog__content">
-      <BesluitTypeSelect @besluitTypes={{this.besluitSubType.subTypes}} @onchange={{this.updateBesluitSubSubType}} @selected={{this.besluitSubSubType}} />
-    </div>
-  {{/if}}
+  {{#unless this.hasSelected}}
+    {{#if this.besluit.subTypes.length}}
+      <div class="modal-dialog__content">
+        <BesluitTypeSelect @besluitTypes={{this.besluitType.subTypes}} @onchange={{this.updateBesluitSubType}} @selected={{this.subBesluit}} />
+      </div>
+    {{/if}}
+    {{#if this.subBesluit.subTypes.length}}
+      <div class="modal-dialog__content">
+        <BesluitTypeSelect @besluitTypes={{this.subBesluit.subTypes}} @onchange={{this.updateBesluitSubSubType}} @selected={{this.subSubBesluit}} />
+      </div>
+    {{/if}}
+  {{/unless}}
   <div class="modal-dialog__footer">
     <WuButtonGroup>
       <WuButton @label="{{if this.hasSelected 'Pas aan' 'Voeg in'}}" class="button button--narrow" @onClick={{this.insert}} />
