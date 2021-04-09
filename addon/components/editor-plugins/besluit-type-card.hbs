@@ -13,6 +13,16 @@
   <div class="modal-dialog__content">
     <BesluitTypeSelect @besluitTypes={{this.besluitTypes}} @onchange={{this.updateBesluitType}} @selected={{this.besluitType}} />
   </div>
+  {{#if this.besluitType.subTypes.length}}
+    <div class="modal-dialog__content">
+      <BesluitTypeSelect @besluitTypes={{this.besluitType.subTypes}} @onchange={{this.updateBesluitSubType}} @selected={{this.besluitSubType}} />
+    </div>
+  {{/if}}
+  {{#if this.besluitSubType.subTypes.length}}
+    <div class="modal-dialog__content">
+      <BesluitTypeSelect @besluitTypes={{this.besluitSubType.subTypes}} @onchange={{this.updateBesluitSubSubType}} @selected={{this.besluitSubSubType}} />
+    </div>
+  {{/if}}
   <div class="modal-dialog__footer">
     <WuButtonGroup>
       <WuButton @label="{{if this.hasSelected 'Pas aan' 'Voeg in'}}" class="button button--narrow" @onClick={{this.insert}} />

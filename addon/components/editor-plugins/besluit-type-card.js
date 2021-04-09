@@ -67,6 +67,12 @@ export default class BesluitTypeCard extends Component {
   @reads('args.info.besluitType')
   besluitType;
 
+  @reads('args.info.besluitTypeSubType')
+  besluitSubType;
+
+  @reads('args.info.besluitTypeSubSubType')
+  besluitSubSubType;
+
   /**
    * Array of Besluit types fetched from the ttl
    * @property besluitType
@@ -88,7 +94,16 @@ export default class BesluitTypeCard extends Component {
     const besluitType = selected;
     this.besluitType = besluitType;
   }
-
+  @action
+  updateBesluitSubType(selected) {
+    const besluitType = selected;
+    this.besluitSubType = besluitType;
+  }
+  @action
+  updateBesluitSubSubType(selected) {
+    const besluitType = selected;
+    this.besluitSubSubType = besluitType;
+  }
   @action
   insert() {
     this.hintsRegistry.removeHintsAtLocation(this.location, this.hrId, this.who);
