@@ -67,6 +67,17 @@ export default class BesluitTypeCard extends Component {
   @reads('args.info.besluitType')
   besluitType;
 
+  @reads('args.info.besluitTypeSubType')
+  besluitSubType;
+
+  @reads('args.info.besluitTypeSubSubType')
+  besluitSubSubType;
+
+  //used to update selections since the other vars dont seem to work in octane
+  @tracked besluit;
+  @tracked subBesluit;
+  @tracked subSubBesluit;
+
   /**
    * Array of Besluit types fetched from the ttl
    * @property besluitType
@@ -81,14 +92,32 @@ export default class BesluitTypeCard extends Component {
 
   constructor(...args) {
     super(...args);
-    this.hasSelected = !!this.args.info.besluitType;
+    if(this.args.info.besluitType){
+      this.hasSelected = true;
+      this.besluit = this.args.info.besluitType;
+    }
+    if(this.args.info.besluitSubType){
+      this.subBesluit = this.args.info.besluitSubType;
+    }
+    if(this.args.info.besluitSubSubType){
+      this.subSubbesluit = this.args.info.besluitSubSubType;
+    }
   }
   @action
   updateBesluitType(selected) {
-    const besluitType = selected;
-    this.besluitType = besluitType;
+    this.besluit = selected;
+    this.besluitType = selected;
   }
-
+  @action
+  updateBesluitSubType(selected) {
+    this.subBesluit = selected;
+    this.besluitSubType = selected;
+  }
+  @action
+  updateBesluitSubSubType(selected) {
+    this.subSubBesluit = selected;
+    this.besluitSubSubType = selected;
+  }
   @action
   insert() {
     this.hintsRegistry.removeHintsAtLocation(this.location, this.hrId, this.who);
