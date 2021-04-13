@@ -67,12 +67,6 @@ export default class BesluitTypeCard extends Component {
   @reads('args.info.besluitType')
   besluitType;
 
-  @reads('args.info.besluitTypeSubType')
-  besluitSubType;
-
-  @reads('args.info.besluitTypeSubSubType')
-  besluitSubSubType;
-
   //used to update selections since the other vars dont seem to work in octane
   @tracked besluit;
   @tracked subBesluit;
@@ -94,30 +88,57 @@ export default class BesluitTypeCard extends Component {
     super(...args);
     if(this.args.info.besluitType){
       this.hasSelected = true;
-      this.besluit = this.args.info.besluitType;
-    }
-    if(this.args.info.besluitSubType){
-      this.subBesluit = this.args.info.besluitSubType;
-    }
-    if(this.args.info.besluitSubSubType){
-      this.subSubbesluit = this.args.info.besluitSubSubType;
+      const firstAncestor=this.findBesluitTypeParent(this.args.info.besluitType);
+      const secondAncestor=this.findBesluitTypeParent(firstAncestor);
+      if(firstAncestor && secondAncestor){
+        this.besluit = secondAncestor;
+        this.subBesluit = firstAncestor;
+        this.subSubBesluit = this.args.info.besluitType;
+      }
+      else if(firstAncestor){
+        this.besluit = firstAncestor;
+        this.subBesluit = this.args.info.besluitType;
+      }
+      else{
+        this.besluit = this.args.info.besluitType;
+      }
     }
   }
   @action
   updateBesluitType(selected) {
     this.besluit = selected;
     this.besluitType = selected;
+    this.subBesluit=null;
+    this.subSubBesluit=null;
   }
   @action
   updateBesluitSubType(selected) {
     this.subBesluit = selected;
-    this.besluitSubType = selected;
+    this.besluitType = selected;
+    this.subSubBesluit=null;
   }
   @action
   updateBesluitSubSubType(selected) {
     this.subSubBesluit = selected;
-    this.besluitSubSubType = selected;
+    this.besluitType = selected;
   }
+
+  findBesluitTypeParent(besluitType, array=this.besluitTypes, parent=null){
+    if(!besluitType){
+      return null;
+    }
+    for(let i=0; i<array.length; i++){
+      if(array[i] == besluitType){
+        return parent;
+      }
+      else if(array[i].subTypes.length){
+        parent = array[i];
+        return this.findBesluitTypeParent(besluitType, array[i].subTypes, parent)
+      }
+    }
+    return null;
+  }
+
   @action
   insert() {
     this.hintsRegistry.removeHintsAtLocation(this.location, this.hrId, this.who);

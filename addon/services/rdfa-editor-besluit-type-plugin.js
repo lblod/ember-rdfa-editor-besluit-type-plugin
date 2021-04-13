@@ -24,7 +24,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
   loadData: task(function*() {
     let bestuurseenheid = yield this.currentSession.get('group')
     const classificatie = yield bestuurseenheid.get('classificatie');
-    const types = yield fetchBesluitTypes(classificatie.uri)
+    const types = yield fetchBesluitTypes(classificatie.uri);
     this.types = types
   }),
 
@@ -114,7 +114,8 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
 
     let besluitType = undefined;
     if (besluitTypeString) {
-      besluitType = this.types.filter((type) => type.typeAttribute.replace('besluittype:', 'https://data.vlaanderen.be/id/concept/BesluitType/') === besluitTypeString)[0];
+      const shortUri=besluitTypeString.replace('https://data.vlaanderen.be/id/concept/BesluitType/', 'besluittype:');
+      besluitType = this.findBesluitTypeByURI(shortUri);
     }
 
     hints.push({
@@ -124,8 +125,25 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
       uri
     });
     return hints;
+  },
+
+  findBesluitTypeByURI(URI, array=this.types){
+    if(!URI){
+      return null;
+    }
+    for(let i=0; i<array.length; i++){
+      if(array[i].typeAttribute == URI){
+        return array[i];
+      }
+      else if(array[i].subTypes.length){
+        return this.findBesluitTypeByURI(URI, array[i].subTypes)
+      }
+    }
+    return null;
   }
 });
+
+
 
 RdfaEditorBesluitTypePlugin.reopen({
   who: 'editor-plugins/besluit-type-card'
