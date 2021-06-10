@@ -1,10 +1,15 @@
 <PowerSelect
   @disabled={{@disabled}}
-  @placeholder="Jaarrekening, ..."
-  @search={{this.search}}
-  @searchPlaceholder="Typ om te zoeken..."
-  @searchEnabled={{true}}
-  @options={{@besluitTypes}}
+  {{!--
+    disabled search for now as it's broken in the GN modal
+                       --}}
+   {{!--
+     @placeholder="Jaarrekening, ..."
+     @search={{this.search}}
+     @searchEnabled={{true}}
+             --}}
+  @searchField="label"
+  @options={{this.besluitTypes}}
   @selected={{@selected}}
   @onChange={{@onchange}} as |besluitType|>
   {{besluitType.label}}
