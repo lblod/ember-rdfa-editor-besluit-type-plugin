@@ -133,7 +133,7 @@ export default class BesluitTypeCard extends Component {
       }
       else if(array[i].subTypes.length){
         parent = array[i];
-        return this.findBesluitTypeParent(besluitType, array[i].subTypes, parent)
+        return this.findBesluitTypeParent(besluitType, array[i].subTypes, parent);
       }
     }
     return null;
@@ -141,23 +141,20 @@ export default class BesluitTypeCard extends Component {
 
   @action
   insert() {
-    this.hintsRegistry.removeHintsAtLocation(this.location, this.hrId, this.who);
-
     this.hasSelected = true;
     let newTypeOfs = null;
     const oldBesluitType = this.args.info.besluitTypeOfs.filter(type => type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')).firstObject;
-
     if (oldBesluitType) {
       newTypeOfs = this.args.info.besluitTypeOfs.map(type => {
         if (type == oldBesluitType) {
-          return this.besluitType.typeAttribute;
+          return this.besluitType.uri;
         } else {
           return type;
         }
       });
     } else {
       newTypeOfs = this.args.info.besluitTypeOfs;
-      newTypeOfs.push(this.besluitType.typeAttribute);
+      newTypeOfs.push(this.besluitType.uri);
     }
 
     const selection = this.editor.selectContext(this.location, {
@@ -177,7 +174,7 @@ export default class BesluitTypeCard extends Component {
     if (!this.editor.isEmpty(hiddenSelection)) { // We already have a hidden span in the document, we only need to change its content
       this.editor.update(hiddenSelection, {
         set: {
-          innerHTML: this.besluitType.typeAttribute
+          innerHTML: this.besluitType.uri
         }
       });
     } else { // We add the span into the decision
@@ -186,7 +183,7 @@ export default class BesluitTypeCard extends Component {
       });
       this.editor.update(selectionForSpan, {
         prepend: {
-          innerHTML: `<span class="u-hidden" property="ext:hiddenBesluitType">${this.besluitType.typeAttribute}</span>`
+          innerHTML: `<span class="u-hidden" property="ext:hiddenBesluitType">${this.besluitType.uri}</span>`
         }
       });
     }

@@ -1,6 +1,6 @@
 import Service from '@ember/service';
 import EmberObject from '@ember/object';
-import { task } from 'ember-concurrency';
+import { task, waitForProperty } from 'ember-concurrency';
 import fetchBesluitTypes from '../utils/fetchBesluitTypes';
 import { inject as service } from '@ember/service';
 
@@ -15,17 +15,17 @@ import { inject as service } from '@ember/service';
 const RdfaEditorBesluitTypePlugin = Service.extend({
 
   currentSession: service(),
-
+  types: null,
   init(){
     this._super(...arguments);
-    this.loadData.perform()
+    this.loadData.perform();
   },
 
   loadData: task(function*() {
-    let bestuurseenheid = yield this.currentSession.get('group')
+    let bestuurseenheid = yield this.currentSession.get('group');
     const classificatie = yield bestuurseenheid.get('classificatie');
     const types = yield fetchBesluitTypes(classificatie.uri);
-    this.types = types
+    this.types = types;
   }),
 
   /**
@@ -40,7 +40,8 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
    *
    * @public
    */
-   execute: task(function * (hrId, rdfaBlocks, hintsRegistry, editor) {
+  execute: task(function * (hrId, rdfaBlocks, hintsRegistry, editor) {
+    yield waitForProperty(this, "types");
     if (rdfaBlocks.length === 0) return [];
     let hints = [];
 
@@ -109,14 +110,8 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
     const hints = [];
     const uri = besluit.rdfaAttributes.resource;
     const typeofAttr = besluit.rdfaAttributes.typeof;
-
-    const besluitTypeString = typeofAttr.find(type => type.includes('https://data.vlaanderen.be/id/concept/BesluitType/'));
-
-    let besluitType = undefined;
-    if (besluitTypeString) {
-      const shortUri=besluitTypeString.replace('https://data.vlaanderen.be/id/concept/BesluitType/', 'besluittype:');
-      besluitType = this.findBesluitTypeByURI(shortUri);
-    }
+    const besluitTypeUri = typeofAttr.find( (type) => type.includes('https://data.vlaanderen.be/id/concept/BesluitType/'));
+    const besluitType = besluitTypeUri && this.findBesluitTypeByURI(besluitTypeUri);
 
     hints.push({
       besluitType: besluitType,
@@ -127,16 +122,19 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
     return hints;
   },
 
-  findBesluitTypeByURI(URI, array=this.types){
-    if(!URI){
-      return null;
-    }
-    for(let i=0; i<array.length; i++){
-      if(array[i].typeAttribute == URI){
-        return array[i];
-      }
-      else if(array[i].subTypes.length){
-        return this.findBesluitTypeByURI(URI, array[i].subTypes)
+  findBesluitTypeByURI(uri, types = this.types){
+    if (uri) {
+      for(const besluitType of types) {
+        if (besluitType.uri === uri) {
+          return besluitType;
+        }
+        else if (besluitType.subTypes.length) {
+          const subType = this.findBesluitTypeByURI(uri, besluitType.subTypes);
+          console.log(subType);
+          if (subType) {
+            return subType;
+          }
+        }
       }
     }
     return null;
