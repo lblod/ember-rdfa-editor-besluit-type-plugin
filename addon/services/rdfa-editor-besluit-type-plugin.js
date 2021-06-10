@@ -13,15 +13,14 @@ import { inject as service } from '@ember/service';
  * @extends EmberService
  */
 const RdfaEditorBesluitTypePlugin = Service.extend({
-
   currentSession: service(),
   types: null,
-  init(){
+  init() {
     this._super(...arguments);
     this.loadData.perform();
   },
 
-  loadData: task(function*() {
+  loadData: task(function* () {
     let bestuurseenheid = yield this.currentSession.get('group');
     const classificatie = yield bestuurseenheid.get('classificatie');
     const types = yield fetchBesluitTypes(classificatie.uri);
@@ -40,23 +39,26 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
    *
    * @public
    */
-  execute: task(function * (hrId, rdfaBlocks, hintsRegistry, editor) {
-    yield waitForProperty(this, "types");
+  execute: task(function* (hrId, rdfaBlocks, hintsRegistry, editor) {
+    yield waitForProperty(this, 'types');
     if (rdfaBlocks.length === 0) return [];
     let hints = [];
 
-    const uniqueRichNodes = editor.findUniqueRichNodes(rdfaBlocks, { typeof: 'http://data.vlaanderen.be/ns/besluit#Besluit' });
-
+    const uniqueRichNodes = editor.findUniqueRichNodes(rdfaBlocks, {
+      typeof: 'http://data.vlaanderen.be/ns/besluit#Besluit',
+    });
 
     uniqueRichNodes.forEach((richNode) => {
-      hintsRegistry.removeHintsInRegion(richNode.region, hrId, this.get('who'));
+      hintsRegistry.removeHintsInRegion(richNode.region, hrId, this.who);
       hints.pushObjects(this.generateHintsForContext(richNode));
     });
 
-    const cards = hints.map( (hint) => this.generateCard(hrId, hintsRegistry, editor, hint));
+    const cards = hints.map((hint) =>
+      this.generateCard(hrId, hintsRegistry, editor, hint)
+    );
 
-    if(cards.length > 0) {
-      hintsRegistry.addHints(hrId, this.get('who'), cards);
+    if (cards.length > 0) {
+      hintsRegistry.addHints(hrId, this.who, cards);
     }
 
     yield 0;
@@ -79,7 +81,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
   generateCard(hrId, hintsRegistry, editor, hint) {
     return EmberObject.create({
       info: {
-        label: this.get('who'),
+        label: this.who,
         plainValue: hint.text,
         htmlString: '',
         location: hint.location,
@@ -87,11 +89,13 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
         besluitTypeOfs: hint.besluitTypeOfs,
         besluitType: hint.besluitType,
         besluitTypes: this.types,
-        hrId, hintsRegistry, editor,
+        hrId,
+        hintsRegistry,
+        editor,
       },
       location: hint.location,
-      card: this.get('who'),
-      options: { noHighlight: true }
+      card: this.who,
+      options: { noHighlight: true },
     });
   },
 
@@ -110,25 +114,27 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
     const hints = [];
     const uri = besluit.rdfaAttributes.resource;
     const typeofAttr = besluit.rdfaAttributes.typeof;
-    const besluitTypeUri = typeofAttr.find( (type) => type.includes('https://data.vlaanderen.be/id/concept/BesluitType/'));
-    const besluitType = besluitTypeUri && this.findBesluitTypeByURI(besluitTypeUri);
+    const besluitTypeUri = typeofAttr.find((type) =>
+      type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')
+    );
+    const besluitType =
+      besluitTypeUri && this.findBesluitTypeByURI(besluitTypeUri);
 
     hints.push({
       besluitType: besluitType,
       location: besluit.region,
       besluitTypeOfs: besluit.rdfaAttributes.typeof,
-      uri
+      uri,
     });
     return hints;
   },
 
-  findBesluitTypeByURI(uri, types = this.types){
+  findBesluitTypeByURI(uri, types = this.types) {
     if (uri) {
-      for(const besluitType of types) {
+      for (const besluitType of types) {
         if (besluitType.uri === uri) {
           return besluitType;
-        }
-        else if (besluitType.subTypes.length) {
+        } else if (besluitType.subTypes.length) {
           const subType = this.findBesluitTypeByURI(uri, besluitType.subTypes);
           console.log(subType);
           if (subType) {
@@ -138,12 +144,10 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
       }
     }
     return null;
-  }
+  },
 });
 
-
-
 RdfaEditorBesluitTypePlugin.reopen({
-  who: 'editor-plugins/besluit-type-card'
+  who: 'editor-plugins/besluit-type-card',
 });
 export default RdfaEditorBesluitTypePlugin;

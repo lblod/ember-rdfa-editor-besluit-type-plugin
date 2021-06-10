@@ -6,22 +6,29 @@ const profilesFile = 'app/config/editor-profiles.js';
 module.exports = {
   description: 'Adds the plugin to the default and all editor-profiles',
 
-  normalizeEntityName() { },
+  normalizeEntityName() {},
 
-  insertPluginNameAtKey( key, pluginName, afterContents="" ){
+  insertPluginNameAtKey(key, pluginName, afterContents = '') {
     return this.insertIntoFile(
       profilesFile,
       `    "${pluginName}",${afterContents}`,
-      { after: `  ${key}: [\n` });
+      { after: `  ${key}: [\n` }
+    );
   },
 
   async afterInstall(options) {
-    const pluginName = options.originBlueprintName.slice('@lblod/ember-'.length);
+    const pluginName = options.originBlueprintName.slice(
+      '@lblod/ember-'.length
+    );
 
-    if( existsSync(profilesFile) ){
+    if (existsSync(profilesFile)) {
       try {
-        await this.insertPluginNameAtKey("all", pluginName);
-        await this.insertPluginNameAtKey("default", pluginName, " "); /* the extra space here,
+        await this.insertPluginNameAtKey('all', pluginName);
+        await this.insertPluginNameAtKey(
+          'default',
+          pluginName,
+          ' '
+        ); /* the extra space here,
                                                                          makes the line different
                                                                          from the inserted line
                                                                          above.  This is makes
@@ -38,5 +45,5 @@ module.exports = {
       throw 'Could not insert into "all" profile';
     }
     return;
-  }
+  },
 };

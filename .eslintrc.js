@@ -17,13 +17,8 @@ module.exports = {
     'plugin:prettier/recommended',
   ],
   env: {
-    browser: true
+    browser: true,
   },
-  rules: {
-    semi: 'warn',
-    'ember/no-jquery': 'error'
-  },
-  rules: {},
   overrides: [
     // node files
     {

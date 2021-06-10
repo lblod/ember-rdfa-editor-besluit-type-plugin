@@ -1,5 +1,4 @@
 import { tracked } from '@glimmer/tracking';
-import { reads } from '@ember/object/computed';
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 
@@ -12,24 +11,15 @@ import { action } from '@ember/object';
  */
 
 export default class BesluitTypeCard extends Component {
-
   /**
    * Region on which the card applies
    * @property location
    * @type [number,number]
    * @private
    */
-  @reads('args.info.location')
-  location;
-
-  /**
-   * Unique identifier of the event in the hints registry
-   * @property hrId
-   * @type Object
-   * @private
-   */
-  @reads('args.info.hrId')
-  hrId;
+  get location() {
+    return this.args.info.location;
+  }
 
   /**
    * The RDFa editor instance
@@ -37,17 +27,9 @@ export default class BesluitTypeCard extends Component {
    * @type RdfaEditor
    * @private
    */
-  @reads('args.info.editor')
-  editor;
-
-  /**
-   * Hints registry storing the cards
-   * @property hintsRegistry
-   * @type HintsRegistry
-   * @private
-   */
-  @reads('args.info.hintsRegistry')
-  hintsRegistry;
+  get editor() {
+    return this.args.info.editor;
+  }
 
   /**
    * URI of the besluit we are interacting with
@@ -55,8 +37,9 @@ export default class BesluitTypeCard extends Component {
    * @type String
    * @private
    */
-  @reads('args.info.besluitUri')
-  besluitUri;
+  get besluitUri() {
+    return this.args.info.besluitUri;
+  }
 
   /**
    * Actual besluit type selected
@@ -64,8 +47,7 @@ export default class BesluitTypeCard extends Component {
    * @type BesluitType
    * @private
    */
-  @reads('args.info.besluitType')
-  besluitType;
+  @tracked besluitType;
 
   //used to update selections since the other vars dont seem to work in octane
   @tracked besluit;
@@ -78,28 +60,30 @@ export default class BesluitTypeCard extends Component {
    * @type BesluitType Array
    * @private
    */
-  @reads('args.info.besluitTypes')
-  besluitTypes;
+  get besluitTypes() {
+    return this.args.info.besluitTypes;
+  }
 
   @tracked
   hasSelected;
 
   constructor(...args) {
     super(...args);
-    if(this.args.info.besluitType){
+    if (this.args.info.besluitType) {
       this.hasSelected = true;
-      const firstAncestor=this.findBesluitTypeParent(this.args.info.besluitType);
-      const secondAncestor=this.findBesluitTypeParent(firstAncestor);
-      if(firstAncestor && secondAncestor){
+      this.besluitType = this.args.info.besluitType;
+      const firstAncestor = this.findBesluitTypeParent(
+        this.args.info.besluitType
+      );
+      const secondAncestor = this.findBesluitTypeParent(firstAncestor);
+      if (firstAncestor && secondAncestor) {
         this.besluit = secondAncestor;
         this.subBesluit = firstAncestor;
         this.subSubBesluit = this.args.info.besluitType;
-      }
-      else if(firstAncestor){
+      } else if (firstAncestor) {
         this.besluit = firstAncestor;
         this.subBesluit = this.args.info.besluitType;
-      }
-      else{
+      } else {
         this.besluit = this.args.info.besluitType;
       }
     }
@@ -108,14 +92,14 @@ export default class BesluitTypeCard extends Component {
   updateBesluitType(selected) {
     this.besluit = selected;
     this.besluitType = selected;
-    this.subBesluit=null;
-    this.subSubBesluit=null;
+    this.subBesluit = null;
+    this.subSubBesluit = null;
   }
   @action
   updateBesluitSubType(selected) {
     this.subBesluit = selected;
     this.besluitType = selected;
-    this.subSubBesluit=null;
+    this.subSubBesluit = null;
   }
   @action
   updateBesluitSubSubType(selected) {
@@ -123,17 +107,20 @@ export default class BesluitTypeCard extends Component {
     this.besluitType = selected;
   }
 
-  findBesluitTypeParent(besluitType, array=this.besluitTypes, parent=null){
-    if(!besluitType){
+  findBesluitTypeParent(besluitType, array = this.besluitTypes, parent = null) {
+    if (!besluitType) {
       return null;
     }
-    for(let i=0; i<array.length; i++){
-      if(array[i] == besluitType){
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] == besluitType) {
         return parent;
-      }
-      else if(array[i].subTypes.length){
+      } else if (array[i].subTypes.length) {
         parent = array[i];
-        return this.findBesluitTypeParent(besluitType, array[i].subTypes, parent);
+        return this.findBesluitTypeParent(
+          besluitType,
+          array[i].subTypes,
+          parent
+        );
       }
     }
     return null;
@@ -143,9 +130,11 @@ export default class BesluitTypeCard extends Component {
   insert() {
     this.hasSelected = true;
     let newTypeOfs = null;
-    const oldBesluitType = this.args.info.besluitTypeOfs.filter(type => type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')).firstObject;
+    const oldBesluitType = this.args.info.besluitTypeOfs.filter((type) =>
+      type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')
+    ).firstObject;
     if (oldBesluitType) {
-      newTypeOfs = this.args.info.besluitTypeOfs.map(type => {
+      newTypeOfs = this.args.info.besluitTypeOfs.map((type) => {
         if (type == oldBesluitType) {
           return this.besluitType.uri;
         } else {
@@ -158,33 +147,36 @@ export default class BesluitTypeCard extends Component {
     }
 
     const selection = this.editor.selectContext(this.location, {
-      resource: this.besluitUri
+      resource: this.besluitUri,
     });
 
     this.editor.update(selection, {
       set: {
-        typeof: newTypeOfs
-      }
+        typeof: newTypeOfs,
+      },
     });
 
     // Trick: add invisible text to trigger the execute service again // WIP on the editor
     const hiddenSelection = this.editor.selectContext(this.location, {
-      property: "http://mu.semte.ch/vocabularies/ext/hiddenBesluitType"
+      property: 'http://mu.semte.ch/vocabularies/ext/hiddenBesluitType',
     });
-    if (!this.editor.isEmpty(hiddenSelection)) { // We already have a hidden span in the document, we only need to change its content
+    if (!this.editor.isEmpty(hiddenSelection)) {
+      // We already have a hidden span in the document, we only need to change its content
       this.editor.update(hiddenSelection, {
         set: {
-          innerHTML: this.besluitType.uri
-        }
+          innerHTML: this.besluitType.uri,
+        },
       });
-    } else { // We add the span into the decision
-      const selectionForSpan = this.editor.selectContext(this.location, { // We need to reselect for the case where the previous selection has changed
-        resource: this.besluitUri
+    } else {
+      // We add the span into the decision
+      const selectionForSpan = this.editor.selectContext(this.location, {
+        // We need to reselect for the case where the previous selection has changed
+        resource: this.besluitUri,
       });
       this.editor.update(selectionForSpan, {
         prepend: {
-          innerHTML: `<span class="u-hidden" property="ext:hiddenBesluitType">${this.besluitType.uri}</span>`
-        }
+          innerHTML: `<span class="u-hidden" property="ext:hiddenBesluitType">${this.besluitType.uri}</span>`,
+        },
       });
     }
   }

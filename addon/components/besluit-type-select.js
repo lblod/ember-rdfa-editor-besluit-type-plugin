@@ -10,6 +10,8 @@ export default class BesluitTypeSelectComponent extends Component {
 
   @action
   search(term) {
-    return this.args.besluitTypes.filter((besluitType) => besluitType.label.toLowerCase().includes(term.toLowerCase()));
+    return this.args.besluitTypes.filter((besluitType) =>
+      besluitType.label.toLowerCase().includes(term.toLowerCase())
+    );
   }
 }
