@@ -40,7 +40,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
    * @public
    */
   execute: task(function* (hrId, rdfaBlocks, hintsRegistry, editor) {
-    yield waitForProperty(this, 'types');
+    yield waitForProperty(this, 'types', (types) => types?.length);
     if (rdfaBlocks.length === 0) return [];
     let hints = [];
 
