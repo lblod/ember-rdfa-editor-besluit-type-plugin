@@ -3,7 +3,7 @@ import EmberObject from '@ember/object';
 import { task, waitForProperty } from 'ember-concurrency';
 import fetchBesluitTypes from '../utils/fetchBesluitTypes';
 import { inject as service } from '@ember/service';
-
+import { tracked } from '@glimmer/tracking';
 /**
  * Service responsible for correct annotation of dates
  *
@@ -14,7 +14,7 @@ import { inject as service } from '@ember/service';
  */
 const RdfaEditorBesluitTypePlugin = Service.extend({
   currentSession: service(),
-  types: null,
+  @tracked types: null,
   init() {
     this._super(...arguments);
     this.loadData.perform();

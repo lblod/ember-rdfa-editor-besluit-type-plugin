@@ -23,10 +23,14 @@
         <BesluitTypeSelect @besluitTypes={{this.subBesluit.subTypes}} @onchange={{this.updateBesluitSubSubType}} @selected={{this.subSubBesluit}} />
       </div>
     {{/if}}
-  <div class="modal-dialog__footer">
-    <WuButtonGroup>
-      <WuButton @label="{{if this.hasSelected 'Pas aan' 'Voeg in'}}" class="button button--narrow" @onClick={{this.insert}} />
-    </WuButtonGroup>
+    <div class="modal-dialog__footer">
+      <button class="say-button" {{on "click" this.insert}}>
+        {{#if this.hasSelected}}
+          Pas aan
+        {{else}}
+          Voeg in
+        {{/if}}
+      </button>
   </div>
 </div>
 
