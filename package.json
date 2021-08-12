@@ -32,7 +32,8 @@
     "ember-cli-babel": "^7.23.0",
     "ember-cli-htmlbars": "^5.3.1",
     "ember-power-select": "^4.1.4",
-    "ember-rdflib": "0.0.4"
+    "ember-rdflib": "0.0.4",
+    "release-it-lerna-changelog": "^3.1.0"
   },
   "devDependencies": {
     "@ember/optional-features": "^2.0.0",
