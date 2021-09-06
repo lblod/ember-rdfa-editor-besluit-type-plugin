@@ -17,11 +17,17 @@
     <div class="modal-dialog__content">
       <BesluitTypeSelect @besluitTypes={{this.besluit.subTypes}} @onchange={{this.updateBesluitSubType}} @selected={{this.subBesluit}} />
     </div>
+    {{#unless this.subBesluit}}
+      <AuAlert @alertIcon="alert-triangle" @alertTitle="You must select a subtype before it gets saved" @alertskin={{"warning"}} />
+    {{/unless}}
   {{/if}}
   {{#if this.subBesluit.subTypes.length}}
     <div class="modal-dialog__content">
       <BesluitTypeSelect @besluitTypes={{this.subBesluit.subTypes}} @onchange={{this.updateBesluitSubSubType}} @selected={{this.subSubBesluit}} />
     </div>
+    {{#unless this.subSubBesluit}}
+      <AuAlert @alertIcon="alert-triangle" @alertTitle="You must select a subsubtype before it gets saved" @alertskin={{"warning"}} />
+    {{/unless}}
   {{/if}}
 </div>
 
