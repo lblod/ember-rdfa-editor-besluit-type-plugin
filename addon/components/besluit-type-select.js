@@ -5,9 +5,7 @@ export default class BesluitTypeSelectComponent extends Component {
   constructor() {
     super(...arguments);
     this.selected = null;
-    this.besluitTypes = this.args.besluitTypes
-      ? this.args.besluitTypes.sortBy('label')
-      : [];
+    this.besluitTypes = this.args.besluitTypes.sortBy('label');
   }
 
   @action
