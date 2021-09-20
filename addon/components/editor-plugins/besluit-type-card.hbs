@@ -1,33 +1,31 @@
-<div class="modal-dialog modal-dialog--small">
-  <div class="modal-dialog__header">
-    <div class="grid">
-      <div class="col--10-12">
-        {{#if this.hasSelected}}
-          <strong>Geselecteerd besluittype:</strong>
-        {{else}}
-          <strong>Voeg een besluittype in:</strong>
-        {{/if}}
-      </div>
-    </div>
+<div class="say-card">
+  <div class="say-card__header">
+    <h3 class="say-card__title">
+      {{#if this.hasSelected}}
+        Geselecteerd besluittype:
+      {{else}}
+        Voeg een besluittype in:
+      {{/if}}
+    </h3>
   </div>
-  <div class="modal-dialog__content">
+  <div class="say-card__content say-card__content--padding">
     <BesluitTypeSelect @besluitTypes={{this.besluitTypes}} @onchange={{this.updateBesluitType}} @selected={{this.besluit}} />
   </div>
   {{#if this.besluit.subTypes.length}}
-    <div class="modal-dialog__content">
+    <div class="say-card__content say-card__content--padding">
       <BesluitTypeSelect @besluitTypes={{this.besluit.subTypes}} @onchange={{this.updateBesluitSubType}} @selected={{this.subBesluit}} />
+      {{#unless this.subBesluit}}
+        <AuAlert @alertIcon="alert-triangle" @alertTitle="U moet een subtype selecteren voordat het wordt opgeslagen" @alertskin={{"warning"}} @alertsize="small" class="au-u-margin-bottom-none au-u-margin-top-small" />
+      {{/unless}}
     </div>
-    {{#unless this.subBesluit}}
-      <AuAlert @alertIcon="alert-triangle" @alertTitle="You must select a subtype before it gets saved" @alertskin={{"warning"}} />
-    {{/unless}}
   {{/if}}
   {{#if this.subBesluit.subTypes.length}}
-    <div class="modal-dialog__content">
+    <div class="say-card__content say-card__content--padding">
       <BesluitTypeSelect @besluitTypes={{this.subBesluit.subTypes}} @onchange={{this.updateBesluitSubSubType}} @selected={{this.subSubBesluit}} />
+      {{#unless this.subSubBesluit}}
+        <AuAlert @alertIcon="alert-triangle" @alertTitle="U moet een subtype selecteren voordat het wordt opgeslagen" @alertskin={{"warning"}} @alertsize="small" class="au-u-margin-bottom-none au-u-margin-top-small" />
+      {{/unless}}
     </div>
-    {{#unless this.subSubBesluit}}
-      <AuAlert @alertIcon="alert-triangle" @alertTitle="You must select a subsubtype before it gets saved" @alertskin={{"warning"}} />
-    {{/unless}}
   {{/if}}
 </div>
 
