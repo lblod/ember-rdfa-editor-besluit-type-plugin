@@ -1,3 +1,13 @@
+
+## 0.4.0 (2021-09-21)
+
+#### :rocket: Enhancement
+* [#9](https://github.com/lblod/ember-rdfa-editor-besluit-type-plugin/pull/9) Added autosave to the plugin ([@lagartoverde](https://github.com/lagartoverde))
+
+#### Committers: 1
+- Oscar Rodriguez Villalobos ([@lagartoverde](https://github.com/lagartoverde))
+
+
 ## 0.3.0 (2021-09-20)
 
 #### :rocket: Enhancement
