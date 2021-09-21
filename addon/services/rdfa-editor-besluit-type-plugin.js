@@ -12,20 +12,21 @@ import { tracked } from '@glimmer/tracking';
  * @constructor
  * @extends EmberService
  */
-const RdfaEditorBesluitTypePlugin = Service.extend({
-  currentSession: service(),
-  @tracked types: null,
-  init() {
-    this._super(...arguments);
+class RdfaEditorBesluitTypePlugin extends Service {
+  @service currentSession;
+  @tracked types = null;
+  constructor() {
+    super(...arguments);
     this.loadData.perform();
-  },
+  }
 
-  loadData: task(function* () {
+  @task
+  *loadData() {
     let bestuurseenheid = yield this.currentSession.get('group');
     const classificatie = yield bestuurseenheid.get('classificatie');
     const types = yield fetchBesluitTypes(classificatie.uri);
     this.types = types;
-  }),
+  }
 
   /**
    * task to handle the incoming events from the editor dispatcher
@@ -39,7 +40,8 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
    *
    * @public
    */
-  execute: task(function* (hrId, rdfaBlocks, hintsRegistry, editor) {
+  @task
+  *execute(hrId, rdfaBlocks, hintsRegistry, editor) {
     yield waitForProperty(this, 'types', (types) => types?.length);
     if (rdfaBlocks.length === 0) return [];
     let hints = [];
@@ -62,7 +64,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
     }
 
     yield 0;
-  }),
+  }
 
   /**
    * Generates a card given a hint
@@ -97,7 +99,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
       card: this.who,
       options: { noHighlight: true },
     });
-  },
+  }
 
   /**
    * Generates a hint, given a context
@@ -127,7 +129,7 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
       uri,
     });
     return hints;
-  },
+  }
 
   findBesluitTypeByURI(uri, types = this.types) {
     if (uri) {
@@ -144,8 +146,8 @@ const RdfaEditorBesluitTypePlugin = Service.extend({
       }
     }
     return null;
-  },
-});
+  }
+}
 
 RdfaEditorBesluitTypePlugin.reopen({
   who: 'editor-plugins/besluit-type-card',

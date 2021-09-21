@@ -94,17 +94,26 @@ export default class BesluitTypeCard extends Component {
     this.besluitType = selected;
     this.subBesluit = null;
     this.subSubBesluit = null;
+    if (!selected.subTypes.length) {
+      this.insert();
+    }
   }
   @action
   updateBesluitSubType(selected) {
     this.subBesluit = selected;
     this.besluitType = selected;
     this.subSubBesluit = null;
+    if (!selected.subTypes.length) {
+      this.insert();
+    }
   }
   @action
   updateBesluitSubSubType(selected) {
     this.subSubBesluit = selected;
     this.besluitType = selected;
+    if (!selected.subTypes.length) {
+      this.insert();
+    }
   }
 
   findBesluitTypeParent(besluitType, array = this.besluitTypes, parent = null) {
@@ -126,7 +135,6 @@ export default class BesluitTypeCard extends Component {
     return null;
   }
 
-  @action
   insert() {
     this.hasSelected = true;
     let newTypeOfs = null;
