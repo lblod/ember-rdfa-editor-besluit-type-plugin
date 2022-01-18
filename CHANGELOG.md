@@ -1,4 +1,12 @@
 
+## 0.5.0 (2022-01-18)
+
+#### :rocket: Enhancement
+* [#10](https://github.com/lblod/ember-rdfa-editor-besluit-type-plugin/pull/10) make card collapsable ([@nvdk](https://github.com/nvdk))
+
+#### Committers: 1
+- Niels V ([@nvdk](https://github.com/nvdk))
+
 ## 0.4.0 (2021-09-21)
 
 #### :rocket: Enhancement
