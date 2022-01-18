@@ -1,16 +1,15 @@
-<div class="say-card">
-  <div class="say-card__header">
-    <h3 class="say-card__title">
+<AuCard @flex={{true}} @divided={{true}} @expandable={{true}} @isOpenInitially={{this.hasSelected}} @shadow={{true}} @size="small" as |c|>
+  <c.header>
+    <AuHeading @lever="3" @skin="6">
       {{#if this.hasSelected}}
         Geselecteerd besluittype:
       {{else}}
         Voeg een besluittype in:
       {{/if}}
-    </h3>
-  </div>
-  <div class="say-card__content say-card__content--padding">
+    </AuHeading>
+  </c.header>
+  <c.content>
     <BesluitTypeSelect @besluitTypes={{this.besluitTypes}} @onchange={{this.updateBesluitType}} @selected={{this.besluit}} />
-  </div>
   {{#if this.besluit.subTypes.length}}
     <div class="say-card__content say-card__content--padding">
       <BesluitTypeSelect @besluitTypes={{this.besluit.subTypes}} @onchange={{this.updateBesluitSubType}} @selected={{this.subBesluit}} />
@@ -27,6 +26,5 @@
       {{/unless}}
     </div>
   {{/if}}
-</div>
-
-{{yield}}
+  </c.content>
+</AuCard>

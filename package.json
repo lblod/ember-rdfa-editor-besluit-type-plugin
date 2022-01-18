@@ -34,6 +34,10 @@
     "ember-rdflib": "0.0.4",
     "release-it-lerna-changelog": "^3.1.0"
   },
+  "peerDependencies": {
+    "@appuniversum/appuniversum": "^0.2.1",
+    "@appuniversum/ember-appuniversum": "^0.7.0"
+  },
   "devDependencies": {
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.2.8",
