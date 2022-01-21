@@ -65,12 +65,12 @@ export default class BesluitTypeCard extends Component {
   }
 
   @tracked
-  hasSelected;
+  cardExpanded = true;
 
   constructor(...args) {
     super(...args);
     if (this.args.info.besluitType) {
-      this.hasSelected = true;
+      this.cardExpanded = false;
       this.besluitType = this.args.info.besluitType;
       const firstAncestor = this.findBesluitTypeParent(
         this.args.info.besluitType
@@ -137,6 +137,7 @@ export default class BesluitTypeCard extends Component {
 
   insert() {
     this.hasSelected = true;
+    this.cardExpanded = false;
     let newTypeOfs = null;
     const oldBesluitType = this.args.info.besluitTypeOfs.filter((type) =>
       type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')
@@ -187,5 +188,9 @@ export default class BesluitTypeCard extends Component {
         },
       });
     }
+  }
+  @action
+  toggleCard() {
+    this.cardExpanded = !this.cardExpanded;
   }
 }

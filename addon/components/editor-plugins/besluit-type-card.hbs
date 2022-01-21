@@ -1,4 +1,4 @@
-<AuCard @flex={{true}} @divided={{true}} @expandable={{true}} @isOpenInitially={{this.hasSelected}} @shadow={{true}} @size="small" as |c|>
+<AuCard @flex={{true}} @divided={{true}} @expandable={{true}} @shadow={{true}} @size="small" @manualControl={{true}} @isExpanded={{this.cardExpanded}} @openSection={{this.toggleCard}} as |c|>
   <c.header>
     <AuHeading @lever="3" @skin="6">
       {{#if this.hasSelected}}
