@@ -36,7 +36,7 @@
   },
   "peerDependencies": {
     "@appuniversum/appuniversum": "^0.2.1",
-    "@appuniversum/ember-appuniversum": "^0.7.0"
+    "@appuniversum/ember-appuniversum": "^0.9.1"
   },
   "devDependencies": {
     "@ember/optional-features": "^2.0.0",
