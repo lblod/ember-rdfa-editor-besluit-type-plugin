@@ -1,4 +1,12 @@
 
+## 0.5.1 (2022-01-24)
+
+#### :rocket: Enhancement
+* [#13](https://github.com/lblod/ember-rdfa-editor-besluit-type-plugin/pull/13) Close card when you insert the type ([@lagartoverde](https://github.com/lagartoverde))
+
+#### Committers: 1
+- Oscar Rodriguez Villalobos ([@lagartoverde](https://github.com/lagartoverde))
+
 ## 0.5.0 (2022-01-18)
 
 #### :rocket: Enhancement
