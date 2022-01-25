@@ -66,11 +66,12 @@ export default class BesluitTypeCard extends Component {
 
   @tracked
   cardExpanded = true;
+  @tracked
+  hasSelected = false;
 
   constructor(...args) {
     super(...args);
     if (this.args.info.besluitType) {
-      this.cardExpanded = false;
       this.besluitType = this.args.info.besluitType;
       const firstAncestor = this.findBesluitTypeParent(
         this.args.info.besluitType
@@ -86,6 +87,8 @@ export default class BesluitTypeCard extends Component {
       } else {
         this.besluit = this.args.info.besluitType;
       }
+      this.hasSelected = true;
+      this.cardExpanded = false;
     }
   }
   @action
