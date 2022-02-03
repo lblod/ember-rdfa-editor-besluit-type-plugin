@@ -1,4 +1,12 @@
 
+## 0.5.2 (2022-02-03)
+
+#### :bug: Bug Fix
+* [#15](https://github.com/lblod/ember-rdfa-editor-besluit-type-plugin/pull/15) Solved the card title was not changing accordingly ([@lagartoverde](https://github.com/lagartoverde))
+
+#### Committers: 1
+- Oscar Rodriguez Villalobos ([@lagartoverde](https://github.com/lagartoverde))
+
 ## 0.5.1 (2022-01-24)
 
 #### :rocket: Enhancement
