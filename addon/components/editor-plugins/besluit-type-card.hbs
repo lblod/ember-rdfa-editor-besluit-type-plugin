@@ -9,7 +9,7 @@
     </AuHeading>
   </c.header>
   <c.content>
-    <BesluitTypeSelect @besluitTypes={{this.besluitTypes}} @onchange={{this.updateBesluitType}} @selected={{this.besluit}} />
+    <BesluitTypeSelect @besluitTypes={{this.types}} @onchange={{this.updateBesluitType}} @selected={{this.besluit}} />
   {{#if this.besluit.subTypes.length}}
     <div class="say-card__content say-card__content--padding">
       <BesluitTypeSelect @besluitTypes={{this.besluit.subTypes}} @onchange={{this.updateBesluitSubType}} @selected={{this.subBesluit}} />
