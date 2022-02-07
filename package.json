@@ -27,7 +27,7 @@
   "dependencies": {
     "@glimmer/component": "^1.0.3",
     "@glimmer/tracking": "^1.0.3",
-    "ember-auto-import": "^1.11.3",
+    "ember-auto-import": "^2.2.2",
     "ember-cli-babel": "^7.23.0",
     "ember-cli-htmlbars": "^5.3.1",
     "ember-power-select": "^4.1.4",
@@ -36,9 +36,11 @@
   },
   "peerDependencies": {
     "@appuniversum/appuniversum": "^0.2.1",
-    "@appuniversum/ember-appuniversum": "^0.9.1"
+    "@appuniversum/ember-appuniversum": "^0.9.1",
+    "@lblod/ember-rdfa-editor": "^0.50.0-beta.6"
   },
   "devDependencies": {
+    "@lblod/ember-rdfa-editor": "^0.50.0-beta.6",
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.2.8",
     "@lblod/ember-rdfa-editor-plugin-generator": "^0.2.0",
@@ -71,7 +73,12 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.3.2",
     "qunit": "^2.13.0",
-    "qunit-dom": "^1.6.0"
+    "qunit-dom": "^1.6.0",
+    "webpack": "^5.58.2",
+    "xml-formatter": "^2.5.0",
+    "@codemirror/basic-setup": "^0.19.0",
+    "@codemirror/lang-html": "^0.19.3",
+    "@codemirror/lang-xml": "^0.19.2"
   },
   "engines": {
     "node": "10.* || >= 12"
