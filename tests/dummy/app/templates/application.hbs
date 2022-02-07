@@ -1,5 +1,23 @@
-{{page-title "Dummy"}}
+{{page-title "roadsign-regulation-plugin"}}
 
-<h2 id="title">Welcome to Ember</h2>
 
-{{outlet}}
+<Rdfa::RdfaEditorWithDebug
+  @rdfaEditorInit={{this.rdfaEditorInit}}
+  @plugins={{this.plugins}}
+  @editorOptions={{hash
+    showToggleRdfaAnnotations="true"
+    showInsertButton=null
+    showRdfa="true"
+    showRdfaHighlight="true"
+    showRdfaHover="true"
+    showPaper="true"
+    showLeft="true"
+    showSidebar="true"
+  }}
+  @toolbarOptions={{hash
+    showTextStyleButtons="true"
+    showListButtons="true"
+    showIndentButtons="true"
+  }}>
+  <h1>Dummy app - roadsign-regulation-plugin</h1>
+</Rdfa::RdfaEditorWithDebug>
