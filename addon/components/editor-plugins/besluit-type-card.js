@@ -16,14 +16,6 @@ import { inject as service } from '@ember/service';
 export default class BesluitTypeCard extends Component {
   @service currentSession;
 
-  @task
-  *loadData() {
-    let bestuurseenheid = yield this.currentSession.get('group');
-    const classificatie = yield bestuurseenheid.get('classificatie');
-    const types = yield fetchBesluitTypes(classificatie.uri);
-    this.types = types;
-  }
-
   /**
    * Actual besluit type selected
    * @property besluitType
@@ -31,6 +23,7 @@ export default class BesluitTypeCard extends Component {
    * @private
    */
   @tracked besluitType;
+  @tracked previousBesluitType;
   @tracked types = [];
 
   //used to update selections since the other vars dont seem to work in octane
@@ -38,15 +31,22 @@ export default class BesluitTypeCard extends Component {
   @tracked subBesluit;
   @tracked subSubBesluit;
 
-  @tracked
-  cardExpanded = true;
-  @tracked
-  hasSelected = false;
+  @tracked cardExpanded = true;
+  @tracked hasSelected = false;
+  @tracked showCard = false;
 
   constructor(...args) {
     super(...args);
     this.loadData.perform();
     this.args.controller.onEvent('contentChanged', this.getBesluitType);
+  }
+
+  @task
+  *loadData() {
+    let bestuurseenheid = yield this.currentSession.get('group');
+    const classificatie = yield bestuurseenheid.get('classificatie');
+    const types = yield fetchBesluitTypes(classificatie.uri);
+    this.types = types;
   }
 
   @action
@@ -63,6 +63,7 @@ export default class BesluitTypeCard extends Component {
       this.showCard = false;
       return;
     }
+    this.showCard = true;
     const besluitUri = besluit.subject.value;
     const besluitTypes = limitedDatastore
       .match(`>${besluitUri}`, 'a', null)
@@ -71,9 +72,16 @@ export default class BesluitTypeCard extends Component {
     const besluitTypeRelevant = besluitTypesUris.find((type) =>
       type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')
     );
+    this.besluitNode = [
+      ...limitedDatastore
+        .match(`>${besluitUri}`, 'a', null)
+        .asSubjectNodes()
+        .next().value.nodes,
+    ][0];
     if (besluitTypeRelevant) {
+      this.previousBesluitType = besluitTypeRelevant;
       const besluitType = this.findBesluitTypeByURI(besluitTypeRelevant);
-      this.showCard = false;
+
       const firstAncestor = this.findBesluitTypeParent(besluitType);
       const secondAncestor = this.findBesluitTypeParent(firstAncestor);
       if (firstAncestor && secondAncestor) {
@@ -91,7 +99,6 @@ export default class BesluitTypeCard extends Component {
       }
       this.hasSelected = true;
       this.cardExpanded = false;
-      console.log(this.besluit);
     } else {
       this.hasSelected = false;
       this.cardExpanded = true;
@@ -155,7 +162,6 @@ export default class BesluitTypeCard extends Component {
           return besluitType;
         } else if (besluitType.subTypes.length) {
           const subType = this.findBesluitTypeByURI(uri, besluitType.subTypes);
-          console.log(subType);
           if (subType) {
             return subType;
           }
@@ -168,56 +174,19 @@ export default class BesluitTypeCard extends Component {
   insert() {
     this.hasSelected = true;
     this.cardExpanded = false;
-    let newTypeOfs = null;
-    const oldBesluitType = this.args.info.besluitTypeOfs.filter((type) =>
-      type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')
-    ).firstObject;
-    if (oldBesluitType) {
-      newTypeOfs = this.args.info.besluitTypeOfs.map((type) => {
-        if (type == oldBesluitType) {
-          return this.besluitType.uri;
-        } else {
-          return type;
-        }
-      });
-    } else {
-      newTypeOfs = this.args.info.besluitTypeOfs;
-      newTypeOfs.push(this.besluitType.uri);
+    if (this.previousBesluitType) {
+      this.besluitNode = this.args.controller.executeCommand(
+        'remove-type',
+        this.previousBesluitType,
+        this.besluitNode
+      );
     }
 
-    const selection = this.editor.selectContext(this.location, {
-      resource: this.besluitUri,
-    });
-
-    this.editor.update(selection, {
-      set: {
-        typeof: newTypeOfs,
-      },
-    });
-
-    // Trick: add invisible text to trigger the execute service again // WIP on the editor
-    const hiddenSelection = this.editor.selectContext(this.location, {
-      property: 'http://mu.semte.ch/vocabularies/ext/hiddenBesluitType',
-    });
-    if (!this.editor.isEmpty(hiddenSelection)) {
-      // We already have a hidden span in the document, we only need to change its content
-      this.editor.update(hiddenSelection, {
-        set: {
-          innerHTML: this.besluitType.uri,
-        },
-      });
-    } else {
-      // We add the span into the decision
-      const selectionForSpan = this.editor.selectContext(this.location, {
-        // We need to reselect for the case where the previous selection has changed
-        resource: this.besluitUri,
-      });
-      this.editor.update(selectionForSpan, {
-        prepend: {
-          innerHTML: `<span class="u-hidden" property="ext:hiddenBesluitType">${this.besluitType.uri}</span>`,
-        },
-      });
-    }
+    this.args.controller.executeCommand(
+      'add-type',
+      this.besluitType.uri,
+      this.besluitNode
+    );
   }
   @action
   toggleCard() {
