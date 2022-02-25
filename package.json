@@ -35,12 +35,12 @@
     "release-it-lerna-changelog": "^3.1.0"
   },
   "peerDependencies": {
-    "@appuniversum/ember-appuniversum": "^1.0.0",
-    "@lblod/ember-rdfa-editor": "^0.50.0-beta.10"
+    "@appuniversum/ember-appuniversum": "^1.0.2",
+    "@lblod/ember-rdfa-editor": "^0.50.0"
   },
   "devDependencies": {
-    "@appuniversum/ember-appuniversum": "^1.0.0",
-    "@lblod/ember-rdfa-editor": "^0.50.0-beta.10",
+    "@appuniversum/ember-appuniversum": "^1.0.2",
+    "@lblod/ember-rdfa-editor": "^0.50.0",
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.2.8",
     "@lblod/ember-rdfa-editor-plugin-generator": "^0.2.0",
