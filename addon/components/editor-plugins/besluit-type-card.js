@@ -38,7 +38,7 @@ export default class BesluitTypeCard extends Component {
   constructor(...args) {
     super(...args);
     this.loadData.perform();
-    this.args.controller.onEvent('contentChanged', this.getBesluitType);
+    this.args.controller.onEvent('selectionChanged', this.getBesluitType);
   }
 
   @task
