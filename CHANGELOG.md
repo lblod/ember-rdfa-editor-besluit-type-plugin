@@ -1,4 +1,18 @@
 
+
+## 0.6.0 (2022-02-25)
+
+#### :rocket: Enhancement
+* [#16](https://github.com/lblod/ember-rdfa-editor-besluit-type-plugin/pull/16) Feature/user new editor rdfa helpers ([@lagartoverde](https://github.com/lagartoverde))
+
+#### :house: Internal
+* [#19](https://github.com/lblod/ember-rdfa-editor-besluit-type-plugin/pull/19) chore/bump editor 0.50.0 ([@abeforgit](https://github.com/abeforgit))
+
+#### Committers: 2
+- Arne Bertrand ([@abeforgit](https://github.com/abeforgit))
+- Oscar Rodriguez Villalobos ([@lagartoverde](https://github.com/lagartoverde))
+
+
 ## 0.5.2 (2022-02-03)
 
 #### :bug: Bug Fix
