@@ -30,6 +30,7 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
   constructor(...args) {
     super(...args);
     this.loadData.perform();
+    this.getBesluitType();
     this.args.controller.onEvent('selectionChanged', this.getBesluitType);
   }
 
