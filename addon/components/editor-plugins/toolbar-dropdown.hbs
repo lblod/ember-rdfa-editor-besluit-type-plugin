@@ -1,4 +1,4 @@
-  <AuButton @skin='link' {{on "click" this.toggleCard}}>{{if this.hasSelected this.besluit.label "Voeg een besluittype in"}}</AuButton>
+  Besluit Type: <AuButton @skin='link' {{on "click" this.toggleCard}}>{{if this.besluit.label this.besluit.label "Voeg een besluittype in"}}</AuButton>
   <AuModal
     @title={{if this.hasSelected "Geselecteerd besluittype:" "Voeg een besluittype in:"}}
     @modalOpen={{this.cardExpanded}}
