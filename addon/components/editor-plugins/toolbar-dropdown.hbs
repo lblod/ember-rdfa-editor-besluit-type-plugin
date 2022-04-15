@@ -1,4 +1,6 @@
-  &nbsp;&nbsp; Besluit Type:<span style="color: blue;" {{on "click" this.toggleCard}}>{{if this.besluit.label this.besluit.label "Voeg een besluittype in"}}</span>
+  {{#if this.showCard}}
+    &nbsp;&nbsp; Besluit Type:<span style="color: blue;" {{on "click" this.toggleCard}}>{{if this.besluit.label this.besluit.label "Voeg een besluittype in"}}</span>
+  {{/if}}
   <AuModal
     @title={{if this.hasSelected "Geselecteerd besluittype:" "Voeg een besluittype in:"}}
     @modalOpen={{this.cardExpanded}}
