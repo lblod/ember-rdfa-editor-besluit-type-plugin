@@ -1,10 +1,20 @@
 {{#if this.showCard}}
-<AuPill
-  @skin="link"
-  {{on "click" this.toggleCard}}
->
-  Besluit type: {{if this.besluit.label this.besluit.label "Voeg een besluittype in"}}
-</AuPill>
+  {{#if this.besluit.label}}
+  <AuPill
+    @skin="link"
+    {{on "click" this.toggleCard}}
+  >
+    Besluit type: {{this.besluit.label}}
+  </AuPill>
+  {{else}}
+  <AuPill
+    @icon="alert-triangle"
+    @skin="link"
+    {{on "click" this.toggleCard}}
+  >
+    Voeg een besluittype in
+  </AuPill>
+  {{/if}}
 {{/if}}
 <AuModal
   @title={{if this.hasSelected "Geselecteerd besluittype:" "Voeg een besluittype in:"}}
