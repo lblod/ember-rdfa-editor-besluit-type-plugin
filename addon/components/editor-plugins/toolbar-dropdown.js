@@ -5,14 +5,6 @@ import { task } from 'ember-concurrency';
 import fetchBesluitTypes from '../../utils/fetchBesluitTypes';
 import { inject as service } from '@ember/service';
 
-/**
- * Modal displaying a hint of the Date plugin
- *
- * @module editor-besluit-type-plugin
- * @class BesluitTypeCard
- * @extends Ember.Component
- */
-
 export default class EditorPluginsToolbarDropdownComponent extends Component {
   @service currentSession;
 
