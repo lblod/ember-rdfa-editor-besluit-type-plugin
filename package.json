@@ -30,20 +30,18 @@
     "ember-auto-import": "^2.2.2",
     "ember-cli-babel": "^7.23.0",
     "ember-cli-htmlbars": "^5.3.1",
-    "ember-power-select": "^4.1.4",
-    "ember-rdflib": "0.0.4",
-    "release-it-lerna-changelog": "^3.1.0"
+    "ember-power-select": "^5.0.4",
+    "ember-rdflib": "0.0.4"
   },
   "peerDependencies": {
     "@appuniversum/ember-appuniversum": "^1.0.2",
-    "@lblod/ember-rdfa-editor": ">= 0.50.0"
+    "@lblod/ember-rdfa-editor": ">=0.50.0"
   },
   "devDependencies": {
     "@appuniversum/ember-appuniversum": "^1.0.2",
-    "@lblod/ember-rdfa-editor": "^0.50.0",
+    "@lblod/ember-rdfa-editor": ">=0.57.0",
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.2.8",
-    "@lblod/ember-rdfa-editor-plugin-generator": "^0.2.0",
     "babel-eslint": "^10.1.0",
     "broccoli-asset-rev": "^3.0.0",
     "ember-cli": "~3.24.0",
