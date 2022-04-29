@@ -1,16 +1,30 @@
 {{#if this.showCard}}
-  <AuCard @flex={{true}} @divided={{true}} @expandable={{true}} @shadow={{true}} @size="small" @manualControl={{true}} @isExpanded={{this.cardExpanded}} @openSection={{this.toggleCard}} as |c|>
-    <c.header>
-      <AuHeading @lever="3" @skin="6">
-        {{#if this.hasSelected}}
-          Geselecteerd besluittype:
-        {{else}}
-          Voeg een besluittype in:
-        {{/if}}
-      </AuHeading>
-    </c.header>
-    <c.content>
-      <BesluitTypeSelect @besluitTypes={{this.types}} @onchange={{this.updateBesluitType}} @selected={{this.besluit}} />
+  {{#if this.besluit.label}}
+  <AuPill
+    @skin="link"
+    {{on "click" this.toggleCard}}
+  >
+    Besluit type: {{this.besluit.label}}
+  </AuPill>
+  {{else}}
+  <AuPill
+    @icon="alert-triangle"
+    @skin="link"
+    {{on "click" this.toggleCard}}
+  >
+    Voeg een besluittype in
+  </AuPill>
+  {{/if}}
+{{/if}}
+<AuModal
+  @title={{if this.hasSelected "Geselecteerd besluittype:" "Voeg een besluittype in:"}}
+  @modalOpen={{this.cardExpanded}}
+  @closeModal={{this.toggleCard}}
+  @size='default'
+  as |Modal|
+>
+  <Modal.Body>
+    <BesluitTypeSelect @besluitTypes={{this.types}} @onchange={{this.updateBesluitType}} @selected={{this.besluit}} />
     {{#if this.besluit.subTypes.length}}
       <div class="say-card__content say-card__content--padding">
         <BesluitTypeSelect @besluitTypes={{this.besluit.subTypes}} @onchange={{this.updateBesluitSubType}} @selected={{this.subBesluit}} />
@@ -27,6 +41,5 @@
         {{/unless}}
       </div>
     {{/if}}
-    </c.content>
-  </AuCard>
-{{/if}}
+  </Modal.Body>
+</AuModal>

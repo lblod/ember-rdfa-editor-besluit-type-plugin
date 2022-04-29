@@ -30,9 +30,9 @@ export default class BesluitTypePlugin {
   initialize(controller) {
     this.controller = controller;
     controller.registerWidget({
-      componentName: 'editor-plugins/besluit-type-card',
-      identifier: 'besluit-type-plugin/card',
-      desiredLocation: 'sidebar',
+      componentName: 'editor-plugins/toolbar-dropdown',
+      identifier: 'besluit-type-plugin/dropdown',
+      desiredLocation: 'toolbar',
     });
   }
 }
