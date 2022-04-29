@@ -36,7 +36,7 @@
   },
   "peerDependencies": {
     "@appuniversum/ember-appuniversum": "^1.0.7",
-    "@lblod/ember-rdfa-editor": "^0.50.0"
+    "@lblod/ember-rdfa-editor": ">= 0.50.0"
   },
   "devDependencies": {
     "@appuniversum/ember-appuniversum": "^1.0.7",
