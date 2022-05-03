@@ -5,15 +5,7 @@ import { task } from 'ember-concurrency';
 import fetchBesluitTypes from '../../utils/fetchBesluitTypes';
 import { inject as service } from '@ember/service';
 
-/**
- * Card displaying a hint of the Date plugin
- *
- * @module editor-besluit-type-plugin
- * @class BesluitTypeCard
- * @extends Ember.Component
- */
-
-export default class BesluitTypeCard extends Component {
+export default class EditorPluginsToolbarDropdownComponent extends Component {
   @service currentSession;
 
   /**
@@ -31,7 +23,7 @@ export default class BesluitTypeCard extends Component {
   @tracked subBesluit;
   @tracked subSubBesluit;
 
-  @tracked cardExpanded = true;
+  @tracked cardExpanded = false;
   @tracked hasSelected = false;
   @tracked showCard = false;
 

@@ -34,7 +34,7 @@
     "ember-rdflib": "0.0.4"
   },
   "peerDependencies": {
-    "@appuniversum/ember-appuniversum": "^1.0.2",
+    "@appuniversum/ember-appuniversum": "^1.0.7",
     "@lblod/ember-rdfa-editor": ">=0.50.0"
   },
   "devDependencies": {
