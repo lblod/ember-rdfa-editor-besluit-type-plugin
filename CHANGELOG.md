@@ -1,5 +1,21 @@
 
 
+## 0.7.0 (2022-05-05)
+
+#### :boom: Breaking Change
+* [#21](https://github.com/lblod/ember-rdfa-editor-besluit-type-plugin/pull/21) widget redesign ([@Asergey91](https://github.com/Asergey91))
+
+#### :rocket: Enhancement
+* [#22](https://github.com/lblod/ember-rdfa-editor-besluit-type-plugin/pull/22) Ember upgrade v3.24 v3.28 ([@benjay10](https://github.com/benjay10))
+
+#### :house: Internal
+* [#20](https://github.com/lblod/ember-rdfa-editor-besluit-type-plugin/pull/20) Make the peerdep requirement less strict ([@abeforgit](https://github.com/abeforgit))
+
+#### Committers: 3
+- Arne Bertrand ([@abeforgit](https://github.com/abeforgit))
+- Ben ([@benjay10](https://github.com/benjay10))
+- Sergey Andreev ([@Asergey91](https://github.com/Asergey91))
+
 ## 0.6.0 (2022-02-25)
 
 #### :rocket: Enhancement
