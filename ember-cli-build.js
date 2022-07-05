@@ -1,10 +1,20 @@
 'use strict';
 
 const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
+const webpack = require('webpack');
 
 module.exports = function (defaults) {
   let app = new EmberAddon(defaults, {
     // Add options here
+    autoImport: {
+      webpack: {
+        plugins: [
+          new webpack.ProvidePlugin({
+            process: 'process/browser',
+          }),
+        ],
+      },
+    },
   });
 
   /*

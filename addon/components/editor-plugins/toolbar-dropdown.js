@@ -2,6 +2,7 @@ import { tracked } from '@glimmer/tracking';
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
+import { getOwner } from '@ember/application';
 import fetchBesluitTypes from '../../utils/fetchBesluitTypes';
 import { inject as service } from '@ember/service';
 
@@ -35,9 +36,10 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
 
   @task
   *loadData() {
-    let bestuurseenheid = yield this.currentSession.get('group');
+    const bestuurseenheid = yield this.currentSession.get('group');
     const classificatie = yield bestuurseenheid.get('classificatie');
-    const types = yield fetchBesluitTypes(classificatie.uri);
+    const ENV = getOwner(this).resolveRegistration('config:environment');
+    const types = yield fetchBesluitTypes(classificatie.uri, ENV);
     this.types = types;
   }
 
@@ -106,26 +108,23 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
     this.besluitType = selected;
     this.subBesluit = null;
     this.subSubBesluit = null;
-    if (!selected.subTypes.length) {
+    if (!selected.subTypes || !selected.subTypes.length)
       this.insert();
-    }
   }
   @action
   updateBesluitSubType(selected) {
     this.subBesluit = selected;
     this.besluitType = selected;
     this.subSubBesluit = null;
-    if (!selected.subTypes.length) {
+    if (!selected.subTypes || !selected.subTypes.length)
       this.insert();
-    }
   }
   @action
   updateBesluitSubSubType(selected) {
     this.subSubBesluit = selected;
     this.besluitType = selected;
-    if (!selected.subTypes.length) {
+    if (!selected.subTypes || !selected.subTypes.length)
       this.insert();
-    }
   }
 
   findBesluitTypeParent(besluitType, array = this.types, parent = null) {
@@ -135,7 +134,7 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
     for (let i = 0; i < array.length; i++) {
       if (array[i] == besluitType) {
         return parent;
-      } else if (array[i].subTypes.length) {
+      } else if (array[i].subTypes && array[i].subTypes.length) {
         parent = array[i];
         return this.findBesluitTypeParent(
           besluitType,
@@ -152,7 +151,7 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
       for (const besluitType of types) {
         if (besluitType.uri === uri) {
           return besluitType;
-        } else if (besluitType.subTypes.length) {
+        } else if (besluitType.subTypes && besluitType.subTypes.length) {
           const subType = this.findBesluitTypeByURI(uri, besluitType.subTypes);
           if (subType) {
             return subType;
@@ -180,6 +179,7 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
       this.besluitNode
     );
   }
+
   @action
   toggleCard() {
     this.cardExpanded = !this.cardExpanded;

@@ -1,75 +1,95 @@
-import rdflib from 'ember-rdflib';
+import { SparqlEndpointFetcher } from 'fetch-sparql-endpoint';
 
-const DECIDABLE_BY = new rdflib.NamedNode(
-  'http://lblod.data.gift/vocabularies/besluit/decidableBy'
-);
-const SKOS_PREFLABEL = new rdflib.NamedNode(
-  'http://www.w3.org/2004/02/skos/core#prefLabel'
-);
-const SKOS_BROADER = new rdflib.NamedNode(
-  'http://www.w3.org/2004/02/skos/core#broader'
-);
-const SKOS_TOP_CONCEPT_OF = new rdflib.NamedNode(
-  'http://www.w3.org/2004/02/skos/core#topConceptOf'
-);
-const TYPE_CONCEPT_SCHEME = new rdflib.NamedNode(
-  'https://data.vlaanderen.be/id/conceptscheme/BesluitType'
-);
+export default async function fetchBesluitTypes(classificationUri, ENV) {
+  const query = `
+    PREFIX                    conceptscheme: <https://data.vlaanderen.be/id/conceptscheme/>
+    PREFIX                      BesluitType: <https://data.vlaanderen.be/id/concept/BesluitType/>
+    PREFIX              BesluitDocumentType: <https://data.vlaanderen.be/id/concept/BesluitDocumentType/>
+    PREFIX                             skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX                              xsd: <http://www.w3.org/2001/XMLSchema#>
+    PREFIX                              rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX                             core: <http://mu.semte.ch/vocabularies/core/>
+    PREFIX                          besluit: <http://lblod.data.gift/vocabularies/besluit/>
+    PREFIX BestuurseenheidClassificatieCode: <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/>
+    PREFIX                              sch: <https://schema.org/>
+    PREFIX                             rule: <http://lblod.data.gift/vocabularies/notification/>
 
-async function readUrlIntoGraph(url) {
-  const besluitTypesGraph = new rdflib.NamedNode(
-    'http://data.lblod.info/besluitTypes'
-  );
-  const response = await fetch(url);
-  const text = await response.text();
-  const graph = rdflib.graph();
-  await rdflib.parse(text, graph, besluitTypesGraph.value, 'text/turtle');
-  return graph;
-}
-
-function findConceptsDecidableBy(graph, classificationUri) {
-  const classification = new rdflib.NamedNode(classificationUri);
-  const dataset = graph.match(null, SKOS_TOP_CONCEPT_OF, TYPE_CONCEPT_SCHEME);
-  return dataset
-    .filter((triple) =>
-      graph.holds(triple.subject, DECIDABLE_BY, classification)
-    )
-    .map((triple) => triple.subject);
-}
-
-function findPreflabel(graph, concept) {
-  return graph.anyValue(concept, SKOS_PREFLABEL, null);
-}
-
-function getSubTypes(graph, uriNode /*, classificationUri */) {
-  const dataset = graph.match(null, SKOS_BROADER, uriNode);
-  if (dataset.length === 0) {
-    return [];
-  } else {
-    const relevantTypes = dataset;
-    // TODO: seems like this is not defined on subtypes
-    // .filter((triple) => graph.holds(triple.subject, DECIDABLE_BY, new rdflib.NamedNode(classificationUri)));
-    return relevantTypes.map((triple) => {
-      const uri = triple.subject;
-      return {
-        uri: uri.value,
-        label: findPreflabel(graph, uri),
-        subTypes: getSubTypes(graph, uri),
-      };
-    });
-  }
-}
-
-export default async function fetchBesluitTypes(classificatieUri) {
-  const graph = await readUrlIntoGraph(
-    '/assets/ttl/20210205102900-new-besluit-types.ttl'
-  );
-  const relevantConcepts = findConceptsDecidableBy(graph, classificatieUri);
-  return relevantConcepts.map((concept) => {
-    return {
-      label: findPreflabel(graph, concept),
-      uri: concept.value,
-      subTypes: getSubTypes(graph, concept, classificatieUri),
-    };
+    CONSTRUCT {
+      ?s skos:inScheme conceptscheme:BesluitType ;
+         skos:prefLabel ?label ;
+         skos:definition ?definition ;
+         skos:broader ?parent .
+    }
+    WHERE {
+      ?s skos:inScheme conceptscheme:BesluitType ;
+         besluit:notificationRule ?rule .
+      ?rule besluit:decidableBy <${classificationUri}> .
+      OPTIONAL { ?rule sch:validFrom ?validFrom . }
+      OPTIONAL { ?rule sch:validThrough ?validThrough . }
+      BIND(now() AS ?currentTime) .
+      BIND(STRLEN(STR(?validFrom)) > 0 AS ?validFromExists) .
+      BIND(STRLEN(STR(?validThrough)) > 0 AS ?validThroughExists) .
+      FILTER(
+        ((?validFromExists && ?validThroughExists) && (?currentTime < ?validThrough && ?currentTime >= ?validFrom)) ||
+        ((!?validFromExists && ?validThroughExists) && (?currentTime < ?validThrough)) ||
+        ((?validFromExists && !?validThroughExists) && (?currentTime >= ?validFrom))
+      ) .
+      OPTIONAL { ?s skos:prefLabel ?label . }
+      OPTIONAL { ?s skos:definition ?definition . }
+      OPTIONAL { ?s skos:broader ?parent . }
+    }
+  `;
+  const typeFetcher = new SparqlEndpointFetcher({
+    method: 'POST',
   });
+  const endpoint = ENV['besluit-type-plugin']['besluit-types-endpoint'];
+  const tripleStream = await typeFetcher.fetchTriples(endpoint, query);
+  const validBesluitTriples = [];
+  tripleStream.on('data', (triple) => {
+    validBesluitTriples.push(triple);
+  });
+  const validBesluitTriples2 = await new Promise((resolve, reject) => {
+    tripleStream.on('error', reject);
+    tripleStream.on('end', () => resolve(validBesluitTriples));
+  });
+  //Map all the triples to a hierarchical collection of JavaScript objects
+  const jsObjects = quadsToBesluitTypeObjects(validBesluitTriples2);
+  return jsObjects;
 }
+
+function quadsToBesluitTypeObjects(quads) {
+  const besluitTypes = new Map();
+  quads.forEach((quad) => {
+    const existing = besluitTypes.get(quad.subject.value) || {
+      uri: quad.subject.value,
+    };
+    switch (quad.predicate.value) {
+      case 'http://www.w3.org/2004/02/skos/core#definition':
+        existing.definition = quad.object.value;
+        break;
+      case 'http://www.w3.org/2004/02/skos/core#prefLabel':
+        existing.label = quad.object.value;
+        break;
+      case 'http://www.w3.org/2004/02/skos/core#broader':
+        existing.broader = quad.object.value;
+        break;
+    }
+    besluitTypes.set(quad.subject.value, existing);
+  });
+  return createBesluitTypeObjectsHierarchy([...besluitTypes.values()]);
+}
+
+function createBesluitTypeObjectsHierarchy(allBesluitTypes) {
+  const besluitTypes = allBesluitTypes.filter((bst) => !bst.broader);
+  const subTypes = allBesluitTypes.filter((bst) => !!bst.broader);
+  subTypes.forEach((subtype) => {
+    const parent = allBesluitTypes.find((type) => type.uri === subtype.broader);
+    if (parent)
+      if (parent.subTypes)
+        parent.subTypes.push(subtype);
+      else 
+        parent.subTypes = [subtype];
+  });
+  return besluitTypes;
+}
+
