@@ -48,12 +48,12 @@ export default async function fetchBesluitTypes(classificationUri, ENV) {
   tripleStream.on('data', (triple) => {
     validBesluitTriples.push(triple);
   });
-  const validBesluitTriples2 = await new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     tripleStream.on('error', reject);
-    tripleStream.on('end', () => resolve(validBesluitTriples));
+    tripleStream.on('end', resolve);
   });
   //Map all the triples to a hierarchical collection of JavaScript objects
-  const jsObjects = quadsToBesluitTypeObjects(validBesluitTriples2);
+  const jsObjects = quadsToBesluitTypeObjects(validBesluitTriples);
   return jsObjects;
 }
 
@@ -83,13 +83,11 @@ function createBesluitTypeObjectsHierarchy(allBesluitTypes) {
   const besluitTypes = allBesluitTypes.filter((bst) => !bst.broader);
   const subTypes = allBesluitTypes.filter((bst) => !!bst.broader);
   subTypes.forEach((subtype) => {
+    //Use allBesluitTypes to find the parent. This means no tree recursive search process, but we can still create trees of multiple levels deep.
     const parent = allBesluitTypes.find((type) => type.uri === subtype.broader);
     if (parent)
-      if (parent.subTypes)
-        parent.subTypes.push(subtype);
-      else 
-        parent.subTypes = [subtype];
+      if (parent.subTypes) parent.subTypes.push(subtype);
+      else parent.subTypes = [subtype];
   });
   return besluitTypes;
 }
-
