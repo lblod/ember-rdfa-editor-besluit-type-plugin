@@ -25,7 +25,6 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
   @tracked subSubBesluit;
 
   @tracked cardExpanded = false;
-  @tracked hasSelected = false;
   @tracked showCard = false;
 
   constructor(...args) {
@@ -91,10 +90,8 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
         this.subBesluit = undefined;
         this.subSubBesluit = undefined;
       }
-      this.hasSelected = true;
       this.cardExpanded = false;
     } else {
-      this.hasSelected = false;
       this.cardExpanded = true;
       this.besluit = undefined;
       this.subBesluit = undefined;
@@ -160,7 +157,6 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
   }
 
   insert() {
-    this.hasSelected = true;
     this.cardExpanded = false;
     if (this.previousBesluitType) {
       this.besluitNode = this.args.controller.executeCommand(

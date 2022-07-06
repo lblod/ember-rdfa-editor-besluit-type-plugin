@@ -1,8 +1,8 @@
 <div ...attributes>
   <PowerSelect
     @searchEnabled={{true}}
-    @searchMessage="Typ om te zoeken"
-    @noMatchesMessage="Geen resultaten"
+    @searchMessage={{t "besluit-type-plugin.search-message"}}
+    @noMatchesMessage={{t "besluit-type-plugin.no-matches-message"}}
     @search={{this.search}}
     @options={{this.besluitTypes}}
     @selected={{@selected}}
@@ -16,11 +16,11 @@
     {{#unless @selected}}
       <AuAlert
         @icon="alert-triangle"
-        @title="Pas op"
+        @title={{t "besluit-type-plugin.alert-title"}}
         @skin="warning"
         @size="small"
         class="au-u-margin-bottom-none au-u-margin-top-small">
-        <p>U moet een subtype selecteren voordat het wordt opgeslagen</p>
+      <p>{{t "besluit-type-plugin.alert-body"}}</p>
       </AuAlert>
     {{/unless}}
   {{/if}}

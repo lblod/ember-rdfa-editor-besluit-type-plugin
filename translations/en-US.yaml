@@ -1,0 +1,7 @@
+besluit-type-plugin:
+  dt: "Decision type"
+  insert-dt: "Select a decision type"
+  search-message: "Typ to search"
+  no-matches-message: "No results"
+  alert-title: "Attention"
+  alert-body: "You must select a subtype in order to save the decision type"

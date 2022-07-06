@@ -1,22 +1,22 @@
 {{#if this.showCard}}
   {{#if this.besluit.label}}
-  <AuPill
-    @skin="link"
-    {{on "click" this.toggleCard}}>
-    Besluit type: {{this.besluit.label}}
-  </AuPill>
+    <AuPill
+      @skin="link"
+      {{on "click" this.toggleCard}}>
+      {{t "besluit-type-plugin.dt"}}: {{this.besluit.label}}
+    </AuPill>
   {{else}}
-  <AuPill
-    @icon="alert-triangle"
-    @skin="link"
-    {{on "click" this.toggleCard}}>
-    Voeg een besluittype in
-  </AuPill>
+    <AuPill
+      @icon="alert-triangle"
+      @skin="link"
+      {{on "click" this.toggleCard}}>
+      {{t "besluit-type-plugin.insert-dt"}}
+    </AuPill>
   {{/if}}
 {{/if}}
 {{#if this.cardExpanded}}
   <AuModal
-    @title={{if this.hasSelected "Geselecteerd besluittype:" "Voeg een besluittype in:"}}
+    @title={{t "besluit-type-plugin.insert-dt"}}
     @closeModal={{this.toggleCard}}
     @modalOpen={{true}}
     @size='default'
