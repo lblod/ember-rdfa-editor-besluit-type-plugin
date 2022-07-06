@@ -22,22 +22,28 @@
     @size='default'
     as |Modal|>
     <Modal.Body>
-      <BesluitTypeSelect @besluitTypes={{this.types}} @onchange={{this.updateBesluitType}} @selected={{this.besluit}} />
+      <BesluitTypeSelect
+        @besluitTypes={{this.types}}
+        @onchange={{this.updateBesluitType}}
+        @selected={{this.besluit}}
+        @showWarningWhenEmpty={{false}}/>
       {{#if this.besluit.subTypes.length}}
-        <div class="say-card__content say-card__content--padding">
-          <BesluitTypeSelect @besluitTypes={{this.besluit.subTypes}} @onchange={{this.updateBesluitSubType}} @selected={{this.subBesluit}} />
-          {{#unless this.subBesluit}}
-            <AuAlert @alertIcon="alert-triangle" @alertTitle="U moet een subtype selecteren voordat het wordt opgeslagen" @alertskin={{"warning"}} @alertsize="small" class="au-u-margin-bottom-none au-u-margin-top-small" />
-          {{/unless}}
-        </div>
+        <AuHr @size="large"/>
+        <BesluitTypeSelect
+          @besluitTypes={{this.besluit.subTypes}}
+          @onchange={{this.updateBesluitSubType}}
+          @selected={{this.subBesluit}}
+          @showWarningWhenEmpty={{true}}
+          class="au-u-padding-left au-u-padding-right"/>
       {{/if}}
       {{#if this.subBesluit.subTypes.length}}
-        <div class="say-card__content say-card__content--padding">
-          <BesluitTypeSelect @besluitTypes={{this.subBesluit.subTypes}} @onchange={{this.updateBesluitSubSubType}} @selected={{this.subSubBesluit}} />
-          {{#unless this.subSubBesluit}}
-            <AuAlert @alertIcon="alert-triangle" @alertTitle="U moet een subtype selecteren voordat het wordt opgeslagen" @alertskin={{"warning"}} @alertsize="small" class="au-u-margin-bottom-none au-u-margin-top-small" />
-          {{/unless}}
-        </div>
+        <AuHr @size="large"/>
+        <BesluitTypeSelect
+          @besluitTypes={{this.subBesluit.subTypes}}
+          @onchange={{this.updateBesluitSubSubType}}
+          @selected={{this.subSubBesluit}}
+          @showWarningWhenEmpty={{true}}
+          class="au-u-padding-left au-u-padding-right"/>
       {{/if}}
     </Modal.Body>
   </AuModal>

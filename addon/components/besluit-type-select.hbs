@@ -1,19 +1,33 @@
-<PowerSelect
-  @disabled={{@disabled}}
-  {{!--
-    disabled search for now as it's broken in the GN modal
-                       --}}
-   {{!--
-     @placeholder="Jaarrekening, ..."
-     @search={{this.search}}
-     @searchEnabled={{true}}
-             --}}
-  @searchField="label"
-  @options={{this.besluitTypes}}
-  @selected={{@selected}}
-  @onChange={{@onchange}} as |besluitType|>
-  {{besluitType.label}}
-</PowerSelect>
-<p class='au-u-muted au-u-margin-tiny au-u-margin-bottom-small'>
-  {{@selected.definition}}
-</p>
+<div ...attributes>
+  <PowerSelect
+    @disabled={{@disabled}}
+    {{!--
+      disabled search for now as it's broken in the GN modal
+                         --}}
+     {{!--
+       @placeholder="Jaarrekening, ..."
+       @search={{this.search}}
+       @searchEnabled={{true}}
+               --}}
+    @searchField="label"
+    @options={{this.besluitTypes}}
+    @selected={{@selected}}
+    @onChange={{@onchange}} as |besluitType|>
+    {{besluitType.label}}
+  </PowerSelect>
+  <p class='au-u-muted au-u-margin-tiny au-u-margin-bottom-small'>
+    {{@selected.definition}}
+  </p>
+  {{#if @showWarningWhenEmpty}}
+    {{#unless @selected}}
+      <AuAlert
+        @icon="alert-triangle"
+        @title="Pas op"
+        @skin="warning"
+        @size="small"
+        class="au-u-margin-bottom-none au-u-margin-top-small">
+        <p>U moet een subtype selecteren voordat het wordt opgeslagen</p>
+      </AuAlert>
+    {{/unless}}
+  {{/if}}
+</div>
