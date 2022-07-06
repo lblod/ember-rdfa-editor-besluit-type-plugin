@@ -42,12 +42,14 @@
           @icon="cross">
           <p>
             {{t "besluit-type-plugin.error-first-body"}}
+{{!-- template-lint-disable no-bare-strings  --}}
             <AuLinkExternal
               href="mailto:gelinktnotuleren@vlaanderen.be"
               @icon="mail"
               @iconAlignment="left">
               GelinktNotuleren@vlaanderen.be
             </AuLinkExternal>
+{{!-- template-lint-enable no-bare-strings  --}}
             {{t "besluit-type-plugin.error-rest-body"}}
           </p>
         </AuAlert>
