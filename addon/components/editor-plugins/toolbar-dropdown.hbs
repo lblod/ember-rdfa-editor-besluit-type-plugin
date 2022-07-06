@@ -1,17 +1,29 @@
 {{#if this.showCard}}
-  {{#if this.besluit.label}}
+  {{#if this.loadDataTaskInstance.isError}}
     <AuPill
-      @skin="link"
+      @skin="error"
+      @icon="circle-x"
+      @iconAlignment="left"
+      class="au-c-pill--link"
       {{on "click" this.toggleCard}}>
-      {{t "besluit-type-plugin.dt"}}: {{this.besluit.label}}
+      {{t "besluit-type-plugin.error-short"}}
     </AuPill>
   {{else}}
-    <AuPill
-      @icon="alert-triangle"
-      @skin="link"
-      {{on "click" this.toggleCard}}>
-      {{t "besluit-type-plugin.insert-dt"}}
-    </AuPill>
+    {{#if this.besluit.label}}
+      <AuPill
+        @skin="link"
+        {{on "click" this.toggleCard}}>
+        {{t "besluit-type-plugin.dt"}}: {{this.besluit.label}}
+      </AuPill>
+    {{else}}
+      <AuPill
+        @icon="alert-triangle"
+        @iconAlignment="left"
+        @skin="link"
+        {{on "click" this.toggleCard}}>
+        {{t "besluit-type-plugin.insert-dt"}}
+      </AuPill>
+    {{/if}}
   {{/if}}
 {{/if}}
 {{#if this.cardExpanded}}
@@ -23,28 +35,46 @@
     class="au-c-modal--overflow"
     as |Modal|>
     <Modal.Body>
-      <BesluitTypeSelect
-        @besluitTypes={{this.types}}
-        @onchange={{this.updateBesluitType}}
-        @selected={{this.besluit}}
-        @showWarningWhenEmpty={{false}}/>
-      {{#if this.besluit.subTypes.length}}
-        <AuHr @size="large"/>
+      {{#if this.loadDataTaskInstance.isError}}
+        <AuAlert
+          @title={{t "besluit-type-plugin.error-title"}}
+          @skin="error"
+          @icon="cross">
+          <p>
+            {{t "besluit-type-plugin.error-first-body"}}
+            <AuLinkExternal
+              href="mailto:gelinktnotuleren@vlaanderen.be"
+              @icon="mail"
+              @iconAlignment="left">
+              GelinktNotuleren@vlaanderen.be
+            </AuLinkExternal>
+            {{t "besluit-type-plugin.error-rest-body"}}
+          </p>
+        </AuAlert>
+      {{else}}
         <BesluitTypeSelect
-          @besluitTypes={{this.besluit.subTypes}}
-          @onchange={{this.updateBesluitSubType}}
-          @selected={{this.subBesluit}}
-          @showWarningWhenEmpty={{true}}
-          class="au-u-padding-left au-u-padding-right"/>
-      {{/if}}
-      {{#if this.subBesluit.subTypes.length}}
-        <AuHr @size="large"/>
-        <BesluitTypeSelect
-          @besluitTypes={{this.subBesluit.subTypes}}
-          @onchange={{this.updateBesluitSubSubType}}
-          @selected={{this.subSubBesluit}}
-          @showWarningWhenEmpty={{true}}
-          class="au-u-padding-left au-u-padding-right"/>
+          @besluitTypes={{this.types}}
+          @onchange={{this.updateBesluitType}}
+          @selected={{this.besluit}}
+          @showWarningWhenEmpty={{false}}/>
+        {{#if this.besluit.subTypes.length}}
+          <AuHr @size="large"/>
+          <BesluitTypeSelect
+            @besluitTypes={{this.besluit.subTypes}}
+            @onchange={{this.updateBesluitSubType}}
+            @selected={{this.subBesluit}}
+            @showWarningWhenEmpty={{true}}
+            class="au-u-padding-left au-u-padding-right"/>
+        {{/if}}
+        {{#if this.subBesluit.subTypes.length}}
+          <AuHr @size="large"/>
+          <BesluitTypeSelect
+            @besluitTypes={{this.subBesluit.subTypes}}
+            @onchange={{this.updateBesluitSubSubType}}
+            @selected={{this.subSubBesluit}}
+            @showWarningWhenEmpty={{true}}
+            class="au-u-padding-left au-u-padding-right"/>
+        {{/if}}
       {{/if}}
     </Modal.Body>
   </AuModal>

@@ -27,9 +27,11 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
   @tracked cardExpanded = false;
   @tracked showCard = false;
 
+  @tracked loadDataTaskInstance;
+
   constructor(...args) {
     super(...args);
-    this.loadData.perform();
+    this.loadDataTaskInstance = this.loadData.perform();
     this.args.controller.onEvent('selectionChanged', this.getBesluitType);
   }
 
