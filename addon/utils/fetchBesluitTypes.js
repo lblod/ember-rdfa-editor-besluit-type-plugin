@@ -11,16 +11,11 @@ export default async function fetchBesluitTypes(classificationUri, ENV) {
     PREFIX                             core: <http://mu.semte.ch/vocabularies/core/>
     PREFIX                          besluit: <http://lblod.data.gift/vocabularies/besluit/>
     PREFIX BestuurseenheidClassificatieCode: <http://data.vlaanderen.be/id/concept/BestuurseenheidClassificatieCode/>
-    PREFIX                              sch: <https://schema.org/>
+    PREFIX                              sch: <http://schema.org/>
     PREFIX                             rule: <http://lblod.data.gift/vocabularies/notification/>
+    PREFIX                        lblodRule: <http://data.lblod.info/id/notification-rule/>
 
-    CONSTRUCT {
-      ?s skos:inScheme conceptscheme:BesluitType ;
-         skos:prefLabel ?label ;
-         skos:definition ?definition ;
-         skos:broader ?parent .
-    }
-    WHERE {
+    SELECT ?s ?p ?o WHERE {
       ?s skos:inScheme conceptscheme:BesluitType ;
          besluit:notificationRule ?rule .
       ?rule besluit:decidableBy <${classificationUri}> .
@@ -37,44 +32,45 @@ export default async function fetchBesluitTypes(classificationUri, ENV) {
       OPTIONAL { ?s skos:prefLabel ?label . }
       OPTIONAL { ?s skos:definition ?definition . }
       OPTIONAL { ?s skos:broader ?parent . }
+      ?s ?p ?o .
     }
   `;
   const typeFetcher = new SparqlEndpointFetcher({
     method: 'POST',
   });
   const endpoint = ENV['besluit-type-plugin']['besluit-types-endpoint'];
-  const tripleStream = await typeFetcher.fetchTriples(endpoint, query);
+  const bindingStream = await typeFetcher.fetchBindings(endpoint, query);
   const validBesluitTriples = [];
-  tripleStream.on('data', (triple) => {
+  bindingStream.on('data', (triple) => {
     validBesluitTriples.push(triple);
   });
   await new Promise((resolve, reject) => {
-    tripleStream.on('error', reject);
-    tripleStream.on('end', resolve);
+    bindingStream.on('error', reject);
+    bindingStream.on('end', resolve);
   });
   //Map all the triples to a hierarchical collection of JavaScript objects
   const jsObjects = quadsToBesluitTypeObjects(validBesluitTriples);
   return jsObjects;
 }
 
-function quadsToBesluitTypeObjects(quads) {
+function quadsToBesluitTypeObjects(triples) {
   const besluitTypes = new Map();
-  quads.forEach((quad) => {
-    const existing = besluitTypes.get(quad.subject.value) || {
-      uri: quad.subject.value,
+  triples.forEach((triple) => {
+    const existing = besluitTypes.get(triple.s.value) || {
+      uri: triple.s.value,
     };
-    switch (quad.predicate.value) {
+    switch (triple.p.value) {
       case 'http://www.w3.org/2004/02/skos/core#definition':
-        existing.definition = quad.object.value;
+        existing.definition = triple.o.value;
         break;
       case 'http://www.w3.org/2004/02/skos/core#prefLabel':
-        existing.label = quad.object.value;
+        existing.label = triple.o.value;
         break;
       case 'http://www.w3.org/2004/02/skos/core#broader':
-        existing.broader = quad.object.value;
+        existing.broader = triple.o.value;
         break;
     }
-    besluitTypes.set(quad.subject.value, existing);
+    besluitTypes.set(triple.s.value, existing);
   });
   return createBesluitTypeObjectsHierarchy([...besluitTypes.values()]);
 }
