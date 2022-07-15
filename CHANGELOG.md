@@ -1,5 +1,14 @@
 
 
+
+## 0.8.0 (2022-07-15)
+
+#### :rocket: Enhancement
+* [#23](https://github.com/lblod/ember-rdfa-editor-besluit-type-plugin/pull/23) Fetch BesluitTypes from SPARQL endpoint ([@benjay10](https://github.com/benjay10))
+
+#### Committers: 1
+- Ben ([@benjay10](https://github.com/benjay10))
+
 ## 0.7.0 (2022-05-05)
 
 #### :boom: Breaking Change
