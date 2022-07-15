@@ -1,43 +1,82 @@
 {{#if this.showCard}}
-  {{#if this.besluit.label}}
-  <AuPill
-    @skin="link"
-    {{on "click" this.toggleCard}}>
-    Besluit type: {{this.besluit.label}}
-  </AuPill>
+  {{#if this.loadDataTaskInstance.isError}}
+    <AuPill
+      @skin="error"
+      @icon="circle-x"
+      @iconAlignment="left"
+      class="au-c-pill--link"
+      {{on "click" this.toggleCard}}>
+      {{t "besluit-type-plugin.error-short"}}
+    </AuPill>
   {{else}}
-  <AuPill
-    @icon="alert-triangle"
-    @skin="link"
-    {{on "click" this.toggleCard}}>
-    Voeg een besluittype in
-  </AuPill>
+    {{#if this.besluit.label}}
+      <AuPill
+        @skin="link"
+        {{on "click" this.toggleCard}}>
+        {{t "besluit-type-plugin.dt"}}: {{this.besluit.label}}
+      </AuPill>
+    {{else}}
+      <AuPill
+        @icon="alert-triangle"
+        @iconAlignment="left"
+        @skin="link"
+        {{on "click" this.toggleCard}}>
+        {{t "besluit-type-plugin.insert-dt"}}
+      </AuPill>
+    {{/if}}
   {{/if}}
 {{/if}}
 {{#if this.cardExpanded}}
   <AuModal
-    @title={{if this.hasSelected "Geselecteerd besluittype:" "Voeg een besluittype in:"}}
+    @title={{t "besluit-type-plugin.insert-dt"}}
     @closeModal={{this.toggleCard}}
     @modalOpen={{true}}
     @size='default'
+    class="au-c-modal--overflow"
     as |Modal|>
     <Modal.Body>
-      <BesluitTypeSelect @besluitTypes={{this.types}} @onchange={{this.updateBesluitType}} @selected={{this.besluit}} />
-      {{#if this.besluit.subTypes.length}}
-        <div class="say-card__content say-card__content--padding">
-          <BesluitTypeSelect @besluitTypes={{this.besluit.subTypes}} @onchange={{this.updateBesluitSubType}} @selected={{this.subBesluit}} />
-          {{#unless this.subBesluit}}
-            <AuAlert @alertIcon="alert-triangle" @alertTitle="U moet een subtype selecteren voordat het wordt opgeslagen" @alertskin={{"warning"}} @alertsize="small" class="au-u-margin-bottom-none au-u-margin-top-small" />
-          {{/unless}}
-        </div>
-      {{/if}}
-      {{#if this.subBesluit.subTypes.length}}
-        <div class="say-card__content say-card__content--padding">
-          <BesluitTypeSelect @besluitTypes={{this.subBesluit.subTypes}} @onchange={{this.updateBesluitSubSubType}} @selected={{this.subSubBesluit}} />
-          {{#unless this.subSubBesluit}}
-            <AuAlert @alertIcon="alert-triangle" @alertTitle="U moet een subtype selecteren voordat het wordt opgeslagen" @alertskin={{"warning"}} @alertsize="small" class="au-u-margin-bottom-none au-u-margin-top-small" />
-          {{/unless}}
-        </div>
+      {{#if this.loadDataTaskInstance.isError}}
+        <AuAlert
+          @title={{t "besluit-type-plugin.error-title"}}
+          @skin="error"
+          @icon="cross">
+          <p>
+            {{t "besluit-type-plugin.error-first-body"}}
+{{!-- template-lint-disable no-bare-strings  --}}
+            <AuLinkExternal
+              href="mailto:gelinktnotuleren@vlaanderen.be"
+              @icon="mail"
+              @iconAlignment="left">
+              GelinktNotuleren@vlaanderen.be
+            </AuLinkExternal>
+{{!-- template-lint-enable no-bare-strings  --}}
+            {{t "besluit-type-plugin.error-rest-body"}}
+          </p>
+        </AuAlert>
+      {{else}}
+        <BesluitTypeSelect
+          @besluitTypes={{this.types}}
+          @onchange={{this.updateBesluitType}}
+          @selected={{this.besluit}}
+          @showWarningWhenEmpty={{false}}/>
+        {{#if this.besluit.subTypes.length}}
+          <AuHr @size="large"/>
+          <BesluitTypeSelect
+            @besluitTypes={{this.besluit.subTypes}}
+            @onchange={{this.updateBesluitSubType}}
+            @selected={{this.subBesluit}}
+            @showWarningWhenEmpty={{true}}
+            class="au-u-padding-left au-u-padding-right"/>
+        {{/if}}
+        {{#if this.subBesluit.subTypes.length}}
+          <AuHr @size="large"/>
+          <BesluitTypeSelect
+            @besluitTypes={{this.subBesluit.subTypes}}
+            @onchange={{this.updateBesluitSubSubType}}
+            @selected={{this.subSubBesluit}}
+            @showWarningWhenEmpty={{true}}
+            class="au-u-padding-left au-u-padding-right"/>
+        {{/if}}
       {{/if}}
     </Modal.Body>
   </AuModal>

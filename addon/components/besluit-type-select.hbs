@@ -1,16 +1,28 @@
-<PowerSelect
-  @disabled={{@disabled}}
-  {{!--
-    disabled search for now as it's broken in the GN modal
-                       --}}
-   {{!--
-     @placeholder="Jaarrekening, ..."
-     @search={{this.search}}
-     @searchEnabled={{true}}
-             --}}
-  @searchField="label"
-  @options={{this.besluitTypes}}
-  @selected={{@selected}}
-  @onChange={{@onchange}} as |besluitType|>
-  {{besluitType.label}}
-</PowerSelect>
+<div ...attributes>
+  <PowerSelect
+    @renderInPlace={{true}}
+    @searchEnabled={{true}}
+    @searchMessage={{t "besluit-type-plugin.search-message"}}
+    @noMatchesMessage={{t "besluit-type-plugin.no-matches-message"}}
+    @search={{this.search}}
+    @options={{this.besluitTypes}}
+    @selected={{@selected}}
+    @onChange={{@onchange}} as |besluitType|>
+    {{besluitType.label}}
+  </PowerSelect>
+  <p class='au-u-muted au-u-margin-tiny au-u-margin-bottom-small'>
+    {{@selected.definition}}
+  </p>
+  {{#if @showWarningWhenEmpty}}
+    {{#unless @selected}}
+      <AuAlert
+        @icon="alert-triangle"
+        @title={{t "besluit-type-plugin.alert-title"}}
+        @skin="warning"
+        @size="small"
+        class="au-u-margin-bottom-none au-u-margin-top-small">
+      <p>{{t "besluit-type-plugin.alert-body"}}</p>
+      </AuAlert>
+    {{/unless}}
+  {{/if}}
+</div>

@@ -46,13 +46,12 @@ export default async function fetchBesluitTypes(classificationUri, ENV) {
   bindingStream.on('data', (triple) => {
     validBesluitTriples.push(triple);
   });
-  await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     bindingStream.on('error', reject);
-    bindingStream.on('end', resolve);
-  });
-  //Map all the triples to a hierarchical collection of JavaScript objects
-  const jsObjects = quadsToBesluitTypeObjects(validBesluitTriples);
-  return jsObjects;
+    bindingStream.on('end', () => {
+      resolve(validBesluitTriples);
+    });
+  }).then(quadsToBesluitTypeObjects);
 }
 
 function quadsToBesluitTypeObjects(triples) {

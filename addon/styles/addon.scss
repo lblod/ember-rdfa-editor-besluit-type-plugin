@@ -1,0 +1,5 @@
+/*This is a temporary fix in combination with @renderInPlace={{true}} on the PowerSelect in a modal to be able to use the search field. This fix might make it (in some form) to ember-appuniversum so that this can be removed.*/
+.au-c-modal--overflow,
+.au-c-modal--overflow .au-c-modal__body {
+  overflow: visible !important;
+}

@@ -1,0 +1,11 @@
+besluit-type-plugin:
+  dt: "Besluittype"
+  insert-dt: "Selecteer een besluittype"
+  search-message: "Typ om te zoeken"
+  no-matches-message: "Geen resultaten"
+  alert-title: "Pas op"
+  alert-body: "U moet een subtype selecteren opdat het besluittype kan worden opgeslagen"
+  error-short: "Fout bij ophalen besluittypes"
+  error-title: "Fout"
+  error-first-body: "Er was een probleem bij het ophalen van de besluittypes. Probeer later opnieuw. Bij blijvende problemen, contacteer"
+  error-rest-body: ". Voor meer specifieke details, controleer de console in de browser."
