@@ -29,10 +29,12 @@ export default async function fetchBesluitTypes(classificationUri, ENV) {
         ((!?validFromExists && ?validThroughExists) && (?currentTime < ?validThrough)) ||
         ((?validFromExists && !?validThroughExists) && (?currentTime >= ?validFrom))
       ) .
-      OPTIONAL { ?s skos:prefLabel ?label . }
-      OPTIONAL { ?s skos:definition ?definition . }
-      OPTIONAL { ?s skos:broader ?parent . }
       ?s ?p ?o .
+      VALUES ?p {
+        skos:prefLabel
+        skos:definition
+        skos:broader
+      }
     }
   `;
   const typeFetcher = new SparqlEndpointFetcher({
