@@ -1,6 +1,14 @@
 
 
 
+## 0.8.1 (2022-08-12)
+
+#### :rocket: Enhancement
+* [#25](https://github.com/lblod/ember-rdfa-editor-besluit-type-plugin/pull/25) improve config a bit ([@nvdk](https://github.com/nvdk))
+
+#### Committers: 1
+- Niels V ([@nvdk](https://github.com/nvdk))
+
 ## 0.8.0 (2022-07-15)
 
 #### :rocket: Enhancement
