@@ -40,7 +40,7 @@ export default async function fetchBesluitTypes(classificationUri, ENV) {
   const typeFetcher = new SparqlEndpointFetcher({
     method: 'POST',
   });
-  const endpoint = ENV['besluit-type-plugin']['besluit-types-endpoint'];
+  const endpoint = ENV.besluitTypePlugin.endpoint;
   const bindingStream = await typeFetcher.fetchBindings(endpoint, query);
   const validBesluitTriples = [];
   bindingStream.on('data', (triple) => {
