@@ -2,8 +2,8 @@
 
 module.exports = function (/* environment, appConfig */) {
   return {
-    'besluit-type-plugin': {
-      'besluit-types-endpoint': '{{BESLUIT_TYPES_SPARQL_ENDPOINT}}',
+    besluitTypePlugin: {
+      endpoint: 'https://centrale-vindplaats.lblod.info/sparql',
     },
   };
 };
