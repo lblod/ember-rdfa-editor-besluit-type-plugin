@@ -1,6 +1,16 @@
 
 
 
+
+## 0.9.0 (2022-09-07)
+
+#### :boom: Breaking Change
+* [#26](https://github.com/lblod/ember-rdfa-editor-besluit-type-plugin/pull/26) Bump editor to v0.63.1 ([@abeforgit](https://github.com/abeforgit))
+
+#### Committers: 1
+- Arne Bertrand ([@abeforgit](https://github.com/abeforgit))
+
+
 ## 0.8.1 (2022-08-12)
 
 #### :rocket: Enhancement
