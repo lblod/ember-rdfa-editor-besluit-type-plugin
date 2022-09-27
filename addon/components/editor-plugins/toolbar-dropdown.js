@@ -32,7 +32,9 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
   constructor(...args) {
     super(...args);
     this.loadDataTaskInstance = this.loadData.perform();
-    this.args.controller.onEvent('selectionChanged', this.getBesluitType);
+    this.args.controller.addTransactionDispatchListener(
+      this.onTransactionDispatch
+    );
   }
 
   @task
@@ -44,12 +46,24 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
     this.types = types;
   }
 
-  @action
-  getBesluitType() {
-    const limitedDatastore = this.args.controller.datastore.limitToRange(
-      this.args.controller.selection.lastRange,
-      'rangeIsInside'
+  modifiesSelection(steps) {
+    return steps.some(
+      (step) => step.type === 'selection-step' || step.type === 'operation-step'
     );
+  }
+
+  @action
+  onTransactionDispatch(transaction) {
+    if (this.modifiesSelection(transaction.steps)) {
+      this.getBesluitType(transaction);
+    }
+  }
+
+  @action
+  getBesluitType(transaction) {
+    const limitedDatastore = transaction
+      .getCurrentDataStore()
+      .limitToRange(transaction.currentSelection.lastRange, 'rangeIsInside');
     const besluit = limitedDatastore
       .match(null, 'a', '>http://data.vlaanderen.be/ns/besluit#Besluit')
       .asQuads()
@@ -160,19 +174,19 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
 
   insert() {
     this.cardExpanded = false;
-    if (this.previousBesluitType) {
-      this.besluitNode = this.args.controller.executeCommand(
-        'remove-type',
-        this.previousBesluitType,
-        this.besluitNode
-      );
-    }
-
-    this.args.controller.executeCommand(
-      'add-type',
-      this.besluitType.uri,
-      this.besluitNode
-    );
+    this.args.controller.perform((tr) => {
+      if (this.previousBesluitType) {
+        console.log('REMOVE TYPE: ', this.previousBesluitType);
+        this.besluitNode = tr.commands.removeType({
+          type: this.previousBesluitType,
+          element: this.besluitNode,
+        });
+      }
+      this.besluitNode = tr.commands.addType({
+        type: this.besluitType.uri,
+        element: this.besluitNode,
+      });
+    });
   }
 
   @action
