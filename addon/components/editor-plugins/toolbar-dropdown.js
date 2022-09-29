@@ -46,8 +46,12 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
 
   @action
   getBesluitType() {
+    const selectedRange = this.args.controller.selection.lastRange;
+    if (!selectedRange) {
+      return;
+    }
     const limitedDatastore = this.args.controller.datastore.limitToRange(
-      this.args.controller.selection.lastRange,
+      selectedRange,
       'rangeIsInside'
     );
     const besluit = limitedDatastore
@@ -109,6 +113,7 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
     this.subSubBesluit = null;
     if (!selected.subTypes || !selected.subTypes.length) this.insert();
   }
+
   @action
   updateBesluitSubType(selected) {
     this.subBesluit = selected;
@@ -116,6 +121,7 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
     this.subSubBesluit = null;
     if (!selected.subTypes || !selected.subTypes.length) this.insert();
   }
+
   @action
   updateBesluitSubSubType(selected) {
     this.subSubBesluit = selected;
