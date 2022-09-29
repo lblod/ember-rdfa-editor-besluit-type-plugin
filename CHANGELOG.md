@@ -2,6 +2,16 @@
 
 
 
+
+## 0.9.1 (2022-09-29)
+
+#### :bug: Bug Fix
+* [#28](https://github.com/lblod/ember-rdfa-editor-besluit-type-plugin/pull/28) fix(selection-handler): handle cases with empty selection ([@abeforgit](https://github.com/abeforgit))
+
+#### Committers: 1
+- Arne Bertrand ([@abeforgit](https://github.com/abeforgit))
+
+
 ## 0.9.0 (2022-09-07)
 
 #### :boom: Breaking Change
