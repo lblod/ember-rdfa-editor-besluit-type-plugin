@@ -22,7 +22,8 @@
     "lint:js:fix": "eslint . --fix",
     "start": "ember serve",
     "test": "npm-run-all lint test:*",
-    "test:ember": "ember test"
+    "test:ember": "ember test",
+    "release": "release-it"
   },
   "dependencies": {
     "@glimmer/component": "^1.0.4",
@@ -49,6 +50,7 @@
     "@glimmer/component": "^1.0.4",
     "@glimmer/tracking": "^1.0.4",
     "@lblod/ember-rdfa-editor": ">=0.63.1",
+    "@release-it-plugins/lerna-changelog": "^5.0.0",
     "babel-eslint": "^10.1.0",
     "broccoli-asset-rev": "^3.0.0",
     "ember-cli": "~3.28.5",
@@ -82,6 +84,7 @@
     "prettier": "^2.5.1",
     "qunit": "^2.17.2",
     "qunit-dom": "^1.6.0",
+    "release-it": "^15.5.0",
     "sass": "^1.53.0",
     "webpack": "^5.73.0"
   },
