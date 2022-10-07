@@ -37,6 +37,13 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
     );
   }
 
+  willDestroy() {
+    this.args.controller.removeTransactionDispatchListener(
+      this.onTransactionDispatch
+    );
+    super.willDestroy();
+  }
+
   @task
   *loadData() {
     const bestuurseenheid = yield this.currentSession.get('group');
@@ -52,15 +59,18 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
     );
   }
 
-  @action
-  onTransactionDispatch(transaction) {
+  onTransactionDispatch = (transaction) => {
     if (this.modifiesSelection(transaction.steps)) {
       this.getBesluitType(transaction);
     }
-  }
+  };
 
   @action
   getBesluitType(transaction) {
+    const selectedRange = transaction.currentSelection.lastRange;
+    if (!selectedRange) {
+      return;
+    }
     const limitedDatastore = transaction
       .getCurrentDataStore()
       .limitToRange(transaction.currentSelection.lastRange, 'rangeIsInside');
@@ -123,6 +133,7 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
     this.subSubBesluit = null;
     if (!selected.subTypes || !selected.subTypes.length) this.insert();
   }
+
   @action
   updateBesluitSubType(selected) {
     this.subBesluit = selected;
@@ -130,6 +141,7 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
     this.subSubBesluit = null;
     if (!selected.subTypes || !selected.subTypes.length) this.insert();
   }
+
   @action
   updateBesluitSubSubType(selected) {
     this.subSubBesluit = selected;
