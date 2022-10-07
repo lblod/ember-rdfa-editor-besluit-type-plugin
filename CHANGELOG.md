@@ -3,6 +3,15 @@
 
 
 
+
+## 0.9.2 (2022-10-07)
+
+#### :house: Internal
+* [#30](https://github.com/lblod/ember-rdfa-editor-besluit-type-plugin/pull/30) Add release-it packages and release script ([@elpoelma](https://github.com/elpoelma))
+
+#### Committers: 1
+- Elena Poelman ([@elpoelma](https://github.com/elpoelma))
+
 ## 0.9.1 (2022-09-29)
 
 #### :bug: Bug Fix
