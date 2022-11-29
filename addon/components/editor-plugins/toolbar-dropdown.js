@@ -5,6 +5,10 @@ import { task } from 'ember-concurrency';
 import { getOwner } from '@ember/application';
 import fetchBesluitTypes from '../../utils/fetchBesluitTypes';
 import { inject as service } from '@ember/service';
+import {
+  addType,
+  removeType,
+} from '@lblod/ember-rdfa-editor/commands/type-commands';
 
 export default class EditorPluginsToolbarDropdownComponent extends Component {
   @service currentSession;
@@ -29,10 +33,16 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
 
   @tracked loadDataTaskInstance;
 
+  @tracked besluitPos;
+  @tracked besluitNode;
+
   constructor(...args) {
     super(...args);
     this.loadDataTaskInstance = this.loadData.perform();
-    this.args.controller.onEvent('selectionChanged', this.getBesluitType);
+  }
+
+  get controller() {
+    return this.args.controller;
   }
 
   @task
@@ -46,37 +56,35 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
 
   @action
   getBesluitType() {
-    const selectedRange = this.args.controller.selection.lastRange;
-    if (!selectedRange) {
+    const selection = this.controller.state.selection;
+
+    if (!selection.from) {
       return;
     }
-    const limitedDatastore = this.args.controller.datastore.limitToRange(
-      selectedRange,
-      'rangeIsInside'
-    );
-    const besluit = limitedDatastore
-      .match(null, 'a', '>http://data.vlaanderen.be/ns/besluit#Besluit')
-      .asQuads()
-      .next().value;
-    if (!besluit) {
+    let besluitUri;
+    this.controller.state.doc.descendants((node, pos) => {
+      if (this.besluitPos) {
+        return false;
+      }
+      if (node.attrs['typeof']?.includes('besluit:Besluit')) {
+        this.besluitPos = pos;
+        this.besluitNode = node;
+        besluitUri = node.attrs['resource'];
+        return false;
+      }
+    });
+    if (this.besluitPos === undefined || this.besluitPos === null) {
       this.showCard = false;
       return;
     }
     this.showCard = true;
-    const besluitUri = besluit.subject.value;
-    const besluitTypes = limitedDatastore
+    const besluitTypes = this.controller.datastore
       .match(`>${besluitUri}`, 'a', null)
       .asQuads();
     const besluitTypesUris = [...besluitTypes].map((quad) => quad.object.value);
     const besluitTypeRelevant = besluitTypesUris.find((type) =>
       type.includes('https://data.vlaanderen.be/id/concept/BesluitType/')
     );
-    this.besluitNode = [
-      ...limitedDatastore
-        .match(`>${besluitUri}`, 'a', null)
-        .asSubjectNodes()
-        .next().value.nodes,
-    ][0];
     if (besluitTypeRelevant) {
       this.previousBesluitType = besluitTypeRelevant;
       const besluitType = this.findBesluitTypeByURI(besluitTypeRelevant);
@@ -166,18 +174,11 @@ export default class EditorPluginsToolbarDropdownComponent extends Component {
 
   insert() {
     this.cardExpanded = false;
-    if (this.previousBesluitType) {
-      this.besluitNode = this.args.controller.executeCommand(
-        'remove-type',
-        this.previousBesluitType,
-        this.besluitNode
-      );
-    }
-
-    this.args.controller.executeCommand(
-      'add-type',
-      this.besluitType.uri,
-      this.besluitNode
+    this.controller.checkAndDoCommand(
+      removeType(this.besluitPos, this.previousBesluitType)
+    );
+    this.controller.checkAndDoCommand(
+      addType(this.besluitPos, this.besluitType.uri)
     );
   }
 
